@@ -91,7 +91,7 @@ void *writer_upper_task(void* name)
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         upper(new_S);
-        strncpy(new_S, strlen(new_S), S);
+        strncpy(S, new_S, strlen(new_S));
         count++;
     }
     count++;
@@ -115,7 +115,7 @@ void *writer_lower_task(void* name)
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         lower(new_S);
-        strncpy(new_S, strlen(new_S), S);
+        strncpy(S, new_S, strlen(new_S));
         count++;
     }
     count++;
@@ -124,7 +124,7 @@ void *writer_lower_task(void* name)
 //문자열을 대문자로 바꾸는 함수
 void upper(char *new) {
     int i;
-    strncpy(S, strlen(S), new);
+    strncpy(new, S, strlen(new_S));
     for (int i = 0; i< strlen(S); i++) {
         if (S[i] >= 'a' && S[i] <= 'z')
             new[i] = toupper(new[i]);
@@ -134,7 +134,7 @@ void upper(char *new) {
 //문자열을 소문자로 바꾸는 함수
 void lower(char * new) {
     int i;
-    strncpy(S, strlen(S), new);
+    strncpy(new, S, strlen(new_S));
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'A' && S[i] <= 'Z')
             new[i] = tolower(new[i]);
