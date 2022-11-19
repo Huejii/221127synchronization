@@ -1,145 +1,149 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdio.h>
+#include <string.h>
 #include <pthread.h>
 #include <time.h>
 #include <semaphore.h>
 #define READER_SIZE 5
 
 /*스레드 ID 선언*/
-pthread_t reader[5], writer_upper, writer_lower;
+pthread_t reader[5], writer1, writer2;
 
-/*semaphore variable 선언*/
-// sem_t result;
+// 스레드의 이름 배열 선언 및 초기화
+char* readerName[5] = {"reader01", "reader02", "reader03", "reader04", "reader05"}; //reader
+char* writerName[2] = {"writer_221231", "writer_230101"}; //writer
 
 /*reader와 writer가 접근할 문자열 선언*/
 char* S = "Happy Merry Christmas~!";
 
 /*데이터에 접근한 순서를 파악하기 위한 count variable 선언*/
 int count = 1;
+FILE* file;
 
 /*함수 선언*/
-void upper(char* s);
-void lower(char* s);
-void *reader_task();
-void *writer_upper_task();
-void *writer_upper_task();
+void *reader_task(void* name);
+void *writer_221231(void* name);
+void *writer_230101(void* name);
+
+/*semaphore variable 선언*/
+int readcount = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main()
 {
-    /*writer thread 생성*/
-    for(int i =0; i < READER_SIZE; i++)
+    /*thread create*/
+    pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
+    pthread_create(&writer1, NULL,writer_221231,(void*)writerName[0]);
+    pthread_create(&reader[1],NULL,reader_task,(void*)readerName[1]);
+    pthread_create(&reader[2],NULL,reader_task,(void*)readerName[2]);
+    pthread_create(&writer2,NULL,writer_230101,(void*)writerName[1]);
+    pthread_create(&reader[3],NULL,reader_task,(void*)readerName[3]);
+    pthread_create(&reader[4],NULL,reader_task,(void*)readerName[4]);
+
+    // thread 종료
+    for(int i = 0; i<5; i++)
     {
-        pthread_create(&reader[i],NULL,reader_task,NULL);
+        pthread_join(reader[i],NULL);
     }
+    pthread_join(writer1,NULL);
+    pthread_join(writer2,NULL);
 
-    /*writer thread 생성*/
-    pthread_create(&writer_upper,NULL,writer_upper_task,NULL);  // 데이터를 대문자로 바꾸는 writer => HAPPY MERRY CHRISTMAS~!
-    pthread_create(&writer_lower,NULL,writer_lower_task,NULL);   // 데이터를 소문자로 바꾸는 writer => happy merry christmas~!
-
-
-
-
+    fclose(file);
     return 0;
 }
 
-void *reader_task()
+// reader start routine
+void *reader_task(void* name)
 {
-    while(1){
-       char    ch;
-       int     result;
+    struct tm* time_info;
+    time_t current_time;
+    char curr_time_str[128];
+    int i = 0;
 
-       result = read (fd[0],&ch,1);
-       if (result != 1) {
-            perror("read");
-            exit(3);
-    }    printf ("Reader: %c\n", ch);  }
+    do {
+        pthread_mutex_lock(&mutex);
+        readcount++;
+        if(readcount == 1) pthread_mutex_lock(S);
+        pthread_mutex_unlock(&mutex);
+        file = fopen("event.log", "a");
+        // 100번 수행한다.
+        for (i = 0; i < 100; i++) {
+            // 진행 확인을 위한 로그파일 생성 및 form
+            time(&current_time);
+            time_info = localtime(&current_time);
+            strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
+
+            // 문자열 read 및 출력
+            printf("reader thread id: %lx\t%s\n",pthread_self(), S);
+            // 추가로 확인하기 위해 로그파일에 기록
+            fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
+            count++;
+        }
+        pthread_mutex_lock(&mutex);
+        readcount--;
+        if(readcount == 0) pthread_mutex_unlock(S);
+        pthread_mutex_unlock(&mutex);
+    } while (1);
 }
 
-void *writer_upper_task()
+// writer1 start routine
+void *writer_221231(void* name)
 {
-    upper(S);
+    struct tm* time_info;
+    time_t current_time;
+    char curr_time_str[128];
+    char* N = "Goodbye 2022~!";   // S 문자열을 변경할 문자열
+
+    do{
+        pthread_mutex_lock(S);
+        // 100번 수행한다.
+        for (int i = 0; i < 100; i++) {
+            // 진행 확인을 위한 로그파일 생성 및 form
+            file = fopen("event.log", "a");
+            time(&current_time);
+            time_info = localtime(&current_time;);
+            strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
+
+            // 문자열 변경(write)
+            S = N;
+            // 진행 확인을 위한 출력
+            printf("writer1 thread id: %lx\t%s\n",pthread_self(), S);
+            // 추가로 확인하기 위해 로그파일에 기록
+            fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
+            count++;
+        }
+        pthread_mutex_unlock(S);
+    }while(1);
 }
 
-void *writer_lower_task()
+// writer2 start routine
+void *writer_230101(void* name)
 {
-    lower(S);
-}
+    struct tm* time_info;
+    time_t current_time;
+    char curr_time_str[128];
+    char* N = "Happy New Year~!";   // S 문자열을 변경할 문자열
+    
+    do{
+        thread_mutex_lock(S);
+        // 100번 수행한다.
+        for (int i = 0; i < 100; i++) {
 
-void *writer_ABC()
-{
-     int     result;
-     char    ch='A';
+            // 진행 확인을 위한 로그파일 생성 및 form
+            file = fopen("event.log", "a");
+            time(&current_time);
+            time_info = localtime(&current_time);
+            strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
 
-     while(1){
-           result = write (fd[1], &ch,1);
-           if (result != 1){
-               perror ("write");
-               exit (2);
-           }
-
-           printf ("Writer_ABC: %c\n", ch);
-           if(ch == 'Z')
-              ch = 'A'-1;
-
-           ch++;
-      }
-}
-
-void *writer_abc()
-{
-  int     result;  char    ch='a';
-
-  while(1){
-      result = write (fd[1], &ch,1);
-      if (result != 1){
-            perror ("write");
-            exit (2);
-      }
-
-      printf ("Writer_abc: %c\n", ch);
-      if(ch == 'z')
-            ch = 'a'-1;
-
-     ch++;
-  }
-}
-
-int main()
-{
-   pthread_t       tid1,tid2,tid3;
-   int             result;
-
-   result = pipe (fd);
-   if (result < 0){
-       perror("pipe ");
-       exit(1);
-   }
-
-    pthread_create(&tid1,NULL,reader,NULL);
-    pthread_create(&tid2,NULL,writer_ABC,NULL);
-    pthread_create(&tid3,NULL,writer_abc,NULL);
-
-    pthread_join(tid1,NULL);
-    pthread_join(tid2,NULL);
-    pthread_join(tid3,NULL);
-}
-
-void upper(char* s) {
-    int i;
-    for (i = 0; s[i] != NULL; i++) {
-        if (s[i] >= 'a' && s[i] <= 'z')
-            s[i] -= 'a' - 'A';
+            // 문자열 변경(write)
+            S = N;
+            // 진행 확인을 위한 출력
+            printf("writer thread id: %lx\t%s\n",pthread_self(), S);
+            // 추가로 확인하기 위해 로그파일에 기록
+            fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
+            
     }
-}
-
-// 소문자로 바꿔주는 함수
-void lower(char* s) {
-    int i;
-
-    for (i = 0; s[i] != NULL; i++) {
-        if (s[i] >= 'A' && s[i] <= 'Z')
-            s[i] += 'a' - 'A';
-    }
+    pthread_mutex_unlock(S);
+    }while(1);
 }
