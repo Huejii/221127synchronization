@@ -124,7 +124,7 @@ void *writer_lower_task(void* name)
 //문자열을 대문자로 바꾸는 함수
 void upper(char *new) {
     int i;
-    strncpy(new, S, strlen(new_S));
+    strncpy(new, S, strlen(new));
     for (int i = 0; i< strlen(S); i++) {
         if (S[i] >= 'a' && S[i] <= 'z')
             new[i] = toupper(new[i]);
@@ -134,7 +134,7 @@ void upper(char *new) {
 //문자열을 소문자로 바꾸는 함수
 void lower(char * new) {
     int i;
-    strncpy(new, S, strlen(new_S));
+    strncpy(new, S, strlen(new));
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'A' && S[i] <= 'Z')
             new[i] = tolower(new[i]);
