@@ -32,24 +32,17 @@ void lower();
 
 int main()
 {
-        // reader의 이름 배열 선언 및 초기화 Ex) reader1, reader2, ...
-    // for(int i = 0; i<5; i++)
-    // {
-    //     sprintf(readerName[i], "%s%d", "reader", i+1);
-    // }
-    // writer의 이름 배열 선언 및 초기화
-
     /*thread create*/
     pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
-    pthread_create(&reader[1],NULL,reader_task,(void*)readerName[1]);
-
+    
     pthread_create(&writer_upper,NULL,writer_upper_task,(void*)writerName[0]);  // 데이터를 대문자로 바꾸는 writer => HAPPY MERRY CHRISTMAS~!
-
+    
+    pthread_create(&reader[1],NULL,reader_task,(void*)readerName[1]);
     pthread_create(&reader[2],NULL,reader_task,(void*)readerName[2]);
-    pthread_create(&reader[3],NULL,reader_task,(void*)readerName[3]);
 
     pthread_create(&writer_lower,NULL,writer_lower_task,(void*)writerName[1]);    // 데이터를 소문자로 바꾸는 writer => happy merry christmas~!
-
+   
+    pthread_create(&reader[3],NULL,reader_task,(void*)readerName[3]);
     pthread_create(&reader[4],NULL,reader_task,(void*)readerName[4]);
 
 
@@ -76,7 +69,7 @@ void *reader_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        printf("%s", S);
+        printf("%s\n", S);
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
 
         count++;
