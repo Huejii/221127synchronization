@@ -62,14 +62,13 @@ void *reader_task(void* name)
     char* temp;
 
     int i = 0;
-    file = fopen("event.log", "a");
     for (i = 0; i < 100; i++) {
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
         sleep(1);
         printf("reader pid: %x\t%s\n",getpid(), S);
-        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S);
+        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
 }
@@ -86,7 +85,7 @@ void *writer_221231(void* name)
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
     S = N;
     printf("writer1 pid: %x\t%s\n",getpid(), S);
-    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S);
+    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
     count++;
 }
 
@@ -102,5 +101,5 @@ void *writer_230101(void* name)
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
     S = N;
     printf("writer pid: %x\t%s\n",getpid(), S);
-    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S);
+    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
 }
