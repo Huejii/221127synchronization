@@ -26,10 +26,8 @@ FILE* file;
 
 /*함수 선언*/
 void *reader_task(void* name);
-void *writer_upper_task(void* name);
-void *writer_lower_task(void* name);
-void upper();
-void lower();
+void *writer_221231(void* name);
+void *writer_230101(void* name);
 
 int main()
 {
@@ -104,27 +102,4 @@ void *writer_230101(void* name)
     char* N = "Happy New Year~!";
     S = N;
     count++;
-}
-
-//문자열을 대문자로 바꾸는 함수
-void upper(char *new) {
-    char* N = "Goodbye 2022~!";
-    S = N;
-    strncpy(new, S, strlen(S));
-    for (int i = 0; i< strlen(S); i++) {
-        if (S[i] >= 'a' && S[i] <= 'z')
-            new[i] = toupper(new[i]);
-    }
-}
-
-//문자열을 소문자로 바꾸는 함수
-void lower(char * new) {
-    int i;
-    char* N = "Happy New Year~!";
-    S = N;
-    strncpy(new, S, strlen(S));
-    for (i = 0; i< strlen(S); i++) {
-        if (S[i] >= 'A' && S[i] <= 'Z')
-            new[i] = tolower(new[i]);
-    }
 }
