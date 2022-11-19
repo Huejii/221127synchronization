@@ -68,8 +68,8 @@ void *reader_task(void* name)
         if(readcount == 1) pthread_mutex_lock(&shared_data_mutex);
         pthread_mutex_unlock(&mutex);
         file = fopen("event.log", "a");
-        // 100번 수행한다.
-        for (i = 0; i < 100; i++) {
+        // 10번 수행한다.
+        for (i = 0; i < 10; i++) {
             // 진행 확인을 위한 로그파일 생성 및 form
             time(&current_time);
             time_info = localtime(&current_time);
@@ -98,8 +98,8 @@ void *writer_221231(void* name)
 
     do{
         pthread_mutex_lock(&shared_data_mutex);
-        // 100번 수행한다.
-        for (int i = 0; i < 100; i++) {
+        // 10번 수행한다.
+        for (int i = 0; i < 10; i++) {
             // 진행 확인을 위한 로그파일 생성 및 form
             file = fopen("event.log", "a");
             time(&current_time);
@@ -128,8 +128,8 @@ void *writer_230101(void* name)
     
     do{
         pthread_mutex_lock(&shared_data_mutex);
-        // 100번 수행한다.
-        for (int i = 0; i < 100; i++) {
+        // 10번 수행한다.
+        for (int i = 0; i < 10; i++) {
 
             // 진행 확인을 위한 로그파일 생성 및 form
             file = fopen("event.log", "a");
