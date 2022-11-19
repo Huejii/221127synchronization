@@ -31,7 +31,6 @@ void *writer_230101(void* name);
 
 int main()
 {
-    file = fopen("event.log", "a");
     /*thread create*/
     pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
     pthread_create(&writer_upper,NULL,writer_221231,(void*)writerName[0]);
@@ -63,6 +62,7 @@ void *reader_task(void* name)
     int i = 0;
 
     for (i = 0; i < 100; i++) {
+        file = fopen("event.log", "a");
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
@@ -78,6 +78,7 @@ void *writer_221231(void* name)
     struct tm* timeInfo;
     char currentTimeString[128];
 
+    file = fopen("event.log", "a");
     time(&currentTime);
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
@@ -94,6 +95,7 @@ void *writer_230101(void* name)
     char currentTimeString[128];
     char* new_S;
 
+    file = fopen("event.log", "a");
     time(&currentTime);
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
