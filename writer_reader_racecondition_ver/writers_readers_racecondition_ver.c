@@ -90,7 +90,14 @@ void *writer_upper_task(void* name)
     time(&currentTime);
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-    upper();
+    for (int i = 0; i< strlen(S); i++) {
+    if (S[i] >= 'a' && S[i] <= 'z')
+    {
+        printf("변경전: %c\t",S[i]);
+        S[i] = toupper(S[i]);
+        printf("변경후: %c\n",S[i]);
+    }
+    }
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
 
     count++;
@@ -109,7 +116,12 @@ void *writer_lower_task(void* name)
     time(&currentTime);
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-    lower();
+    for (int i = 0; i< strlen(S); i++) {
+    if (S[i] >= 'A' && S[i] <= 'Z')
+        printf("변경전: %c\t",S[i]);
+        S[i] = tolower(S[i]);
+        printf("변경후: %c\n",S[i]);
+    }
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
 
     count++;
@@ -119,9 +131,8 @@ void *writer_lower_task(void* name)
 //문자열을 대문자로 바꾸는 함수
 void upper() {
     int i;
-    for (i = 0; i< strlen(S); i++) {
+    for (int i = 0; i< strlen(S); i++) {
         if (S[i] >= 'a' && S[i] <= 'z')
-            // S[i] -= 32;
             S[i] = toupper(S[i]);
     }
 }
@@ -132,7 +143,6 @@ void lower() {
 
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'A' && S[i] <= 'Z')
-            // S[i] += 32;
             S[i] = tolower(S[i]);
     }
 }
