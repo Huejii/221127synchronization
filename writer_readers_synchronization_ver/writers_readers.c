@@ -34,8 +34,8 @@ pthread_mutex_t shared_data_mutex = PTHREAD_MUTEX_INITIALIZER;
 int main()
 {
     /*thread create*/
-    pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
     pthread_create(&writer1, NULL,writer_221231,(void*)writerName[0]);
+    pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
     pthread_create(&reader[1],NULL,reader_task,(void*)readerName[1]);
     pthread_create(&reader[2],NULL,reader_task,(void*)readerName[2]);
     pthread_create(&writer2,NULL,writer_230101,(void*)writerName[1]);
