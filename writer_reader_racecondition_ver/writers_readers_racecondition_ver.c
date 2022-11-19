@@ -93,9 +93,9 @@ void *writer_upper_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
+        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         upper(new_S);
         strcpy(S, new_S);
-        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
     count++;
@@ -117,9 +117,9 @@ void *writer_lower_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
+        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         lower(new_S);
         strcpy(S, new_S);
-        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
     count++;
