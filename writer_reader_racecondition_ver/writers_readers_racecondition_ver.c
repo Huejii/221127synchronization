@@ -5,7 +5,6 @@
 #include <pthread.h>
 #include <time.h>
 #include <semaphore.h>
-#include <ctype.h>
 #define READER_SIZE 5
 
 /*스레드 ID 선언*/
@@ -13,7 +12,7 @@ pthread_t reader[5], writer_upper, writer_lower;
 
 // 스레드의 이름 배열 선언 및 초기화
 char* readerName[5] = {"reader01", "reader02", "reader03", "reader04", "reader05"}; //reader
-char* writerName[2] = {"writer_upper", "writer_lower"}; //writer
+char* writerName[2] = {"writer_221231", "writer_230101"}; //writer
 
 /*semaphore variable 선언*/
 // sem_t result;
@@ -34,14 +33,15 @@ void lower();
 
 int main()
 {
+    file = fopen("event.log", "a");
     /*thread create*/
     pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
     pthread_create(&reader[1],NULL,reader_task,(void*)readerName[1]);
     pthread_create(&reader[2],NULL,reader_task,(void*)readerName[2]);
     pthread_create(&reader[3],NULL,reader_task,(void*)readerName[3]);
     pthread_create(&reader[4],NULL,reader_task,(void*)readerName[4]);
-    pthread_create(&writer_upper,NULL,writer_upper_task,(void*)writerName[0]);  // 데이터를 대문자로 바꾸는 writer => HAPPY MERRY CHRISTMAS~!
-    pthread_create(&writer_lower,NULL,writer_lower_task,(void*)writerName[1]);    // 데이터를 소문자로 바꾸는 writer => happy merry christmas~!
+    pthread_create(&writer_upper,NULL,writer_221231,(void*)writerName[0]);
+    pthread_create(&writer_lower,NULL,writer_230101,(void*)writerName[1]);
 
 
     for(int i = 0; i<5; i++)
@@ -64,7 +64,6 @@ void *reader_task(void* name)
     FILE* file;
 
     int i = 0;
-        file = fopen("event.log", "a");
 
     for (i = 0; i < 100; i++) {
         time(&currentTime);
@@ -74,19 +73,13 @@ void *reader_task(void* name)
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
-    fclose(file);
 }
 
-void *writer_upper_task(void* name)
+void *writer_221231(void* name)
 {
         time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
-    char* new_S;
-    FILE* file_writer1;
-
-    int i = 0;
-    file_writer1 = fopen("event.log", "a");
 
     time(&currentTime);
     timeInfo = localtime(&currentTime);
@@ -95,19 +88,14 @@ void *writer_upper_task(void* name)
     S = N;
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
     count++;
-    fclose(file_writer1);
 }
 
-void *writer_lower_task(void* name)
+void *writer_230101(void* name)
 {
     time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
     char* new_S;
-    FILE* file_writer2;
-
-    int i = 0;
-    file_writer2 = fopen("event.log", "a");
 
     time(&currentTime);
     timeInfo = localtime(&currentTime);
@@ -116,7 +104,6 @@ void *writer_lower_task(void* name)
     char* N = "Happy New Year~!";
     S = N;
     count++;
-    fclose(file_writer2);
 }
 
 //문자열을 대문자로 바꾸는 함수
