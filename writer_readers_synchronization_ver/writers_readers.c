@@ -61,31 +61,33 @@ void *reader_task(void* name)
     time_t current_time;
     char curr_time_str[128];
     int i = 0;
+    int more_read = 10;
 
     do {
         pthread_mutex_lock(&mutex);
+        
         readcount++;
         if(readcount == 1) pthread_mutex_lock(&shared_data_mutex);
         pthread_mutex_unlock(&mutex);
         file = fopen("event.log", "a");
         // 10번 수행한다.
-        for (i = 0; i < 10; i++) {
-            // 진행 확인을 위한 로그파일 생성 및 form
-            time(&current_time);
-            time_info = localtime(&current_time);
-            strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
+        // 진행 확인을 위한 로그파일 생성 및 form
+        time(&current_time);
+        time_info = localtime(&current_time);
+        strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
 
-            // 문자열 read 및 출력
-            printf("reader thread id: %lx\t%s\n",pthread_self(), S);
-            // 추가로 확인하기 위해 로그파일에 기록
-            fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
-            count++;
-        }
+        // 문자열 read 및 출력
+        printf("reader thread id: %lx\t%s\n",pthread_self(), S);
+        // 추가로 확인하기 위해 로그파일에 기록
+        fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
+        count++;
+
+        more_read--;
         pthread_mutex_lock(&mutex);
         readcount--;
         if(readcount == 0) pthread_mutex_unlock(&shared_data_mutex);
         pthread_mutex_unlock(&mutex);
-    } while (1);
+    } while (more_read);
 }
 
 // writer1 start routine
@@ -95,27 +97,28 @@ void *writer_221231(void* name)
     time_t current_time;
     char curr_time_str[128];
     char* N = "Goodbye 2022~!";   // S 문자열을 변경할 문자열
+    int more_write = 10;
 
     do{
         pthread_mutex_lock(&shared_data_mutex);
+        more_write =1;
         // 10번 수행한다.
-        for (int i = 0; i < 10; i++) {
-            // 진행 확인을 위한 로그파일 생성 및 form
-            file = fopen("event.log", "a");
-            time(&current_time);
-            time_info = localtime(&current_time);
-            strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
+        // 진행 확인을 위한 로그파일 생성 및 form
+        file = fopen("event.log", "a");
+        time(&current_time);
+        time_info = localtime(&current_time);
+        strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
 
-            // 문자열 변경(write)
-            S = N;
-            // 진행 확인을 위한 출력
-            printf("writer1 thread id: %lx\t%s\n",pthread_self(), S);
-            // 추가로 확인하기 위해 로그파일에 기록
-            fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
-            count++;
-        }
+        // 문자열 변경(write)
+        S = N;
+        // 진행 확인을 위한 출력
+        printf("writer1 thread id: %lx\t%s\n",pthread_self(), S);
+        // 추가로 확인하기 위해 로그파일에 기록
+        fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
+        count++;
         pthread_mutex_unlock(&shared_data_mutex);
-    }while(1);
+        more_write--;
+    }while(more_write);
 }
 
 // writer2 start routine
@@ -125,26 +128,24 @@ void *writer_230101(void* name)
     time_t current_time;
     char curr_time_str[128];
     char* N = "Happy New Year~!";   // S 문자열을 변경할 문자열
+    int more_write = 10;
     
     do{
         pthread_mutex_lock(&shared_data_mutex);
         // 10번 수행한다.
-        for (int i = 0; i < 10; i++) {
+        // 진행 확인을 위한 로그파일 생성 및 form
+        file = fopen("event.log", "a");
+        time(&current_time);
+        time_info = localtime(&current_time);
+        strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
 
-            // 진행 확인을 위한 로그파일 생성 및 form
-            file = fopen("event.log", "a");
-            time(&current_time);
-            time_info = localtime(&current_time);
-            strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
-
-            // 문자열 변경(write)
-            S = N;
-            // 진행 확인을 위한 출력
-            printf("writer thread id: %lx\t%s\n",pthread_self(), S);
-            // 추가로 확인하기 위해 로그파일에 기록
-            fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
-            
-        }
+        // 문자열 변경(write)
+        S = N;
+        // 진행 확인을 위한 출력
+        printf("writer thread id: %lx\t%s\n",pthread_self(), S);
+        // 추가로 확인하기 위해 로그파일에 기록
+        fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
         pthread_mutex_unlock(&shared_data_mutex);
-    }while(1);
+        more_write--;
+    }while(more_write);
 }
