@@ -61,7 +61,7 @@ void *reader_task(void* name)
 
     int i = 0;
     file = fopen("event.log", "a");
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 100; i++) {
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
@@ -98,8 +98,8 @@ void *writer_230101(void* name)
     time(&currentTime);
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
     char* N = "Happy New Year~!";
     S = N;
+    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
     count++;
 }
