@@ -59,7 +59,6 @@ void *reader_task(void* name)
     struct tm* timeInfo;
     char currentTimeString[128];
     char* temp;
-    FILE* file;
 
     int i = 0;
 
