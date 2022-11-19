@@ -123,7 +123,7 @@ void upper() {
     int i;
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'a' && S[i] <= 'z')
-            S[i] -= 'a' - 'A';
+            S[i] -= 32;
     }
 }
 
@@ -133,6 +133,6 @@ void lower() {
 
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'A' && S[i] <= 'Z')
-            S[i] += 'a' - 'A';
+            S[i] += 32;
     }
 }
