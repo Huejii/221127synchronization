@@ -93,8 +93,8 @@ void *writer_upper_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        upper(new_S);
-        strcpy(S,new_S);
+        //upper(new_S);
+        strcpy(S,"HAPPY MERRY CHRISTMAS";
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
@@ -117,8 +117,8 @@ void *writer_lower_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        lower(new_S);
-        strcpy(S,new_S);
+        //lower(new_S);
+        strcpy(S,"happy merry christmas");
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
