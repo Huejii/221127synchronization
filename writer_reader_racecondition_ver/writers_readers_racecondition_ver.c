@@ -21,6 +21,7 @@ char* writerName[2] = {"writer_upper", "writer_lower"}; //writer
 /*reader와 writer가 접근할 문자열 선언*/
 char* S = "Happy Merry Christmas~! ";
 //FILE* shrfile;
+FILE* file;
 
 /*데이터에 접근한 순서를 파악하기 위한 count variable 선언*/
 int count = 1;
@@ -59,7 +60,9 @@ int main()
     }
     pthread_join(writer_upper,NULL);
     pthread_join(writer_lower,NULL);
+    fclose(shrfile);
     return 0;
+    fclose(file);
 }
 
 void *reader_task(void* name)
@@ -69,7 +72,6 @@ void *reader_task(void* name)
     char currentTimeString[128];
     char* temp;
 
-    FILE* file;
     int i = 0;
         file = fopen("event.log", "a");
 
@@ -81,11 +83,11 @@ void *reader_task(void* name)
 
         shrfile = fopen("merrychristmas.txt", "r");
         fgets(temp, 100, shrfile);
-        fclose(shrfile);
         printf("%s\n", temp);
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, temp, count);
         count++;
     }
+
     fclose(file);
 }
 
@@ -95,7 +97,7 @@ void *writer_upper_task(void* name)
     struct tm* timeInfo;
     char currentTimeString[128];
 
-    FILE* file;
+    
     int i = 0;
         file = fopen("event.log", "a");
 
@@ -105,7 +107,6 @@ void *writer_upper_task(void* name)
 
     shrfile = fopen("merrychristmas.txt", "a+");
     fputs("Do you wanna build a snowman? ", shrfile);
-    fclose(shrfile);
 
     // for (int i = 0; i< strlen(S); i++) {
     // if (S[i] >= 'a' && S[i] <= 'z')
@@ -128,7 +129,6 @@ void *writer_lower_task(void* name)
     char currentTimeString[128];
     char* temp = "happy merry christmas~!";
 
-    FILE* file;
     int i = 0;
         file = fopen("event.log", "a");
 
@@ -137,8 +137,6 @@ void *writer_lower_task(void* name)
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
 
     shrfile = fopen("merrychristmas.txt", "a+");
-    fputs("Come on lets go and play! ", shrfile);
-    fclose(shrfile);
 
     // for (int i = 0; i< strlen(S); i++) {
     // if (S[i] >= 'A' && S[i] <= 'Z')
@@ -150,7 +148,6 @@ void *writer_lower_task(void* name)
 
     count++;
     fclose(file);
-
 }
 
 //문자열을 대문자로 바꾸는 함수
