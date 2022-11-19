@@ -60,7 +60,7 @@ void *reader_task(void* name)
     char* temp;
     file = fopen("event.log", "a");
     int i = 0;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 100; i++) {
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
