@@ -9,8 +9,10 @@
 
 /*스레드 ID 선언*/
 pthread_t reader[5], writer_upper, writer_lower;
-char* readerName[5];
-char* writerName[2];
+
+// 스레드의 이름 배열 선언 및 초기화
+char* readerrName[2] = {"reader01", "reader02", "reader03", "reader04", "reader05"}; //reader
+char* writerName[2] = {"writer_upper", "writer_lower"}; //writer
 
 /*semaphore variable 선언*/
 // sem_t result;
@@ -31,13 +33,11 @@ void lower();
 int main()
 {
         // reader의 이름 배열 선언 및 초기화 Ex) reader1, reader2, ...
-    for(int i = 0; i<5; i++)
-    {
-        sprintf(readerName[i], "%s%d", "reader", i+1);
-    }
-
+    // for(int i = 0; i<5; i++)
+    // {
+    //     sprintf(readerName[i], "%s%d", "reader", i+1);
+    // }
     // writer의 이름 배열 선언 및 초기화
-    char* writerName[2] = {"writer_upper", "writer_lower"};
 
     /*thread create*/
     pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
