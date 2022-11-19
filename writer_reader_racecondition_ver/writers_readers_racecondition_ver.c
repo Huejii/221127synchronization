@@ -29,8 +29,8 @@ FILE* shrfile;
 void *reader_task(void* name);
 void *writer_upper_task(void* name);
 void *writer_lower_task(void* name);
-void upper();
-void lower();
+void upper(char * new);
+void lower(char*new);
 
 int main()
 {
@@ -83,6 +83,7 @@ void *writer_upper_task(void* name)
         time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
+    char* new_S;
 
     FILE* file;
     int i = 0;
@@ -92,7 +93,8 @@ void *writer_upper_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        //upper();
+        upper(new_S);
+        strcpy(S,new_S);
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
@@ -104,6 +106,8 @@ void *writer_lower_task(void* name)
     time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
+    char* new_S;
+
 
     FILE* file;
     int i = 0;
@@ -113,7 +117,8 @@ void *writer_lower_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-    //    lower();
+        lower(new_S);
+        strcpy(S,new_S);
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
@@ -121,20 +126,20 @@ void *writer_lower_task(void* name)
 }
 
 //문자열을 대문자로 바꾸는 함수
-void upper() {
+void upper(char *new) {
     int i;
     for (int i = 0; i< strlen(S); i++) {
         if (S[i] >= 'a' && S[i] <= 'z')
-            S[i] = toupper(S[i]);
+            new[i] = toupper(S[i]);
     }
 }
 
 //문자열을 소문자로 바꾸는 함수
-void lower() {
+void lower(char * new) {
     int i;
 
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'A' && S[i] <= 'Z')
-            S[i] = tolower(S[i]);
+            new[i] = tolower(S[i]);
     }
 }
