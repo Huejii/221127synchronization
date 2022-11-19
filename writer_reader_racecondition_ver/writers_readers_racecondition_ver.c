@@ -68,7 +68,7 @@ void *reader_task(void* name)
     int i = 0;
         file = fopen("event.log", "a");
 
-    for (i = 0; i < 10000; i++) {
+    for (i = 0; i < 100; i++) {
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
@@ -88,11 +88,11 @@ void *writer_upper_task(void* name)
     int i = 0;
     file = fopen("event.log", "a");
 
-    for (i = 0; i < 10000; i++) {
+    for (i = 0; i < 100; i++) {
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        upper();
+        //upper();
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
@@ -109,11 +109,11 @@ void *writer_lower_task(void* name)
     int i = 0;
     file = fopen("event.log", "a");
 
-    for (i = 0; i < 10000; i++) {
+    for (i = 0; i < 100; i++) {
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        lower();
+    //    lower();
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
