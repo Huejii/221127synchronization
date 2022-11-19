@@ -77,7 +77,7 @@ void *reader_task(void* name)
         strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
 
         // 문자열 read 및 출력
-        printf("reader thread id: %lx\t%s\n",pthread_self(), S);
+        printf("%s thread id: %lx\t%s\n", (char*)name,pthread_self(), S);
         // 추가로 확인하기 위해 로그파일에 기록
         fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
         count++;
