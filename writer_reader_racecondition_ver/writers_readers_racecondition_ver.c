@@ -34,12 +34,12 @@ int main()
     file = fopen("event.log", "a");
     /*thread create*/
     pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
+    pthread_create(&writer_upper,NULL,writer_221231,(void*)writerName[0]);
     pthread_create(&reader[1],NULL,reader_task,(void*)readerName[1]);
     pthread_create(&reader[2],NULL,reader_task,(void*)readerName[2]);
+    pthread_create(&writer_lower,NULL,writer_230101,(void*)writerName[1]);
     pthread_create(&reader[3],NULL,reader_task,(void*)readerName[3]);
     pthread_create(&reader[4],NULL,reader_task,(void*)readerName[4]);
-    pthread_create(&writer_upper,NULL,writer_221231,(void*)writerName[0]);
-    pthread_create(&writer_lower,NULL,writer_230101,(void*)writerName[1]);
 
 
     for(int i = 0; i<5; i++)
