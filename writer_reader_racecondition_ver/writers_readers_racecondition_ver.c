@@ -121,5 +121,6 @@ void *writer_230101(void* name)
         printf("writer thread id: %lx\t%s\n",pthread_self(), S);
         // 추가로 확인하기 위해 로그파일에 기록
         fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
+        count++;
     }
 }

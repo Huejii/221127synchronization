@@ -145,6 +145,7 @@ void *writer_230101(void* name)
         printf("writer2 thread id: %lx\t%s\n",pthread_self(), S);
         // 추가로 확인하기 위해 로그파일에 기록
         fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
+        count++;
         pthread_mutex_unlock(&shared_data_mutex);
         more_write--;
     }while(more_write);
