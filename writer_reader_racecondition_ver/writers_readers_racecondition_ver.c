@@ -77,7 +77,7 @@ void *writer_221231(void* name)
     char currentTimeString[128];
     char* N = "Goodbye 2022~!";
 
-    for (i = 0; i < 100; i++) {
+    for (int i = 0; i < 100; i++) {
     file = fopen("event.log", "a");
     time(&currentTime);
     timeInfo = localtime(&currentTime);
@@ -96,7 +96,7 @@ void *writer_230101(void* name)
     char currentTimeString[128];
     char* N = "Happy New Year~!";
     
-    for (i = 0; i < 100; i++) {
+    for (int i = 0; i < 100; i++) {
     file = fopen("event.log", "a");
     time(&currentTime);
     timeInfo = localtime(&currentTime);
