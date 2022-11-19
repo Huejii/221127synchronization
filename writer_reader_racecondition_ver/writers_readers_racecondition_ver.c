@@ -19,7 +19,7 @@ char* writerName[2] = {"writer_upper", "writer_lower"}; //writer
 // sem_t result;
 
 /*reader와 writer가 접근할 문자열 선언*/
-char* S = "Happy Merry Christmas~!";
+char* S = "Happy Merry Christmas~! ";
 //FILE* shrfile;
 
 /*데이터에 접근한 순서를 파악하기 위한 count variable 선언*/
@@ -36,7 +36,7 @@ void lower();
 int main()
 {
     shrfile = fopen("merrychristmas.txt", "a");
-    fputs("Happy Merry Chrismas~!\n", shrfile);
+    fputs("Happy Merry Chrismas~! ", shrfile);
     fclose(shrfile);
 
     /*thread create*/
@@ -94,7 +94,6 @@ void *writer_upper_task(void* name)
         time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
-    char* temp = "HAPPY MERRY CHRISTMAS~!\n";
 
     FILE* file;
     int i = 0;
@@ -105,7 +104,7 @@ void *writer_upper_task(void* name)
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
 
     shrfile = fopen("merrychristmas.txt", "a+");
-    fprintf(shrfile, "%s", temp);
+    fputs("Do you wanna build a snowman? ", shrfile);
     fclose(shrfile);
 
     // for (int i = 0; i< strlen(S); i++) {
@@ -116,7 +115,7 @@ void *writer_upper_task(void* name)
     //     printf("변경후: %c\n",S[i]);
     // }
     // }
-    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, temp, count);
+    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, "Do you wanna build a snowman? 추가", count);
 
     count++;
     fclose(file);
@@ -127,7 +126,7 @@ void *writer_lower_task(void* name)
     time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
-    char* temp = "happy merry christmas~!\n";
+    char* temp = "happy merry christmas~!";
 
     FILE* file;
     int i = 0;
@@ -137,8 +136,8 @@ void *writer_lower_task(void* name)
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
 
-        shrfile = fopen("merrychristmas.txt", "a+");
-    fprintf(shrfile, "%s", temp);
+    shrfile = fopen("merrychristmas.txt", "a+");
+    fputs("Come on lets go and play! ", shrfile);
     fclose(shrfile);
 
     // for (int i = 0; i< strlen(S); i++) {
@@ -147,7 +146,7 @@ void *writer_lower_task(void* name)
     //     S[i] = tolower(S[i]);
     //     printf("변경후: %c\n",S[i]);
     // }
-    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, temp, count);
+    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, "Come on lets go and play! 추가", count);
 
     count++;
     fclose(file);
