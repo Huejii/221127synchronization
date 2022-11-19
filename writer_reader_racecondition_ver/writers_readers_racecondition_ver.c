@@ -31,7 +31,6 @@ void *writer_230101(void* name);
 
 int main()
 {
-    file = fopen("event.log", "a");
     /*thread create*/
     pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
     pthread_create(&writer_upper,NULL,writer_221231,(void*)writerName[0]);
