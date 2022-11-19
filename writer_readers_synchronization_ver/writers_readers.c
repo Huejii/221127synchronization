@@ -29,6 +29,7 @@ void *writer_230101(void* name);
 /*semaphore variable 선언*/
 int readcount = 0;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t shared_data_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main()
 {
@@ -64,7 +65,7 @@ void *reader_task(void* name)
     do {
         pthread_mutex_lock(&mutex);
         readcount++;
-        if(readcount == 1) pthread_mutex_lock(S);
+        if(readcount == 1) pthread_mutex_lock(&shared_data_mutex);
         pthread_mutex_unlock(&mutex);
         file = fopen("event.log", "a");
         // 100번 수행한다.
@@ -82,7 +83,7 @@ void *reader_task(void* name)
         }
         pthread_mutex_lock(&mutex);
         readcount--;
-        if(readcount == 0) pthread_mutex_unlock(S);
+        if(readcount == 0) pthread_mutex_unlock(&shared_data_mutex);
         pthread_mutex_unlock(&mutex);
     } while (1);
 }
@@ -96,13 +97,13 @@ void *writer_221231(void* name)
     char* N = "Goodbye 2022~!";   // S 문자열을 변경할 문자열
 
     do{
-        pthread_mutex_lock(S);
+        pthread_mutex_lock(&shared_data_mutex);
         // 100번 수행한다.
         for (int i = 0; i < 100; i++) {
             // 진행 확인을 위한 로그파일 생성 및 form
             file = fopen("event.log", "a");
             time(&current_time);
-            time_info = localtime(&current_time;);
+            time_info = localtime(&current_time);
             strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
 
             // 문자열 변경(write)
@@ -113,7 +114,7 @@ void *writer_221231(void* name)
             fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
             count++;
         }
-        pthread_mutex_unlock(S);
+        pthread_mutex_unlock(&shared_data_mutex);
     }while(1);
 }
 
@@ -126,7 +127,7 @@ void *writer_230101(void* name)
     char* N = "Happy New Year~!";   // S 문자열을 변경할 문자열
     
     do{
-        thread_mutex_lock(S);
+        thread_mutex_lock(shared_data_mutex);
         // 100번 수행한다.
         for (int i = 0; i < 100; i++) {
 
@@ -143,7 +144,7 @@ void *writer_230101(void* name)
             // 추가로 확인하기 위해 로그파일에 기록
             fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
             
-    }
-    pthread_mutex_unlock(S);
+        }
+        pthread_mutex_unlock(&shared_data_mutex);
     }while(1);
 }
