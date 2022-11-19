@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <time.h>
 #include <semaphore.h>
+#include <ctype.h>
 #define READER_SIZE 5
 
 /*스레드 ID 선언*/
@@ -123,7 +124,8 @@ void upper() {
     int i;
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'a' && S[i] <= 'z')
-            S[i] -= 32;
+            // S[i] -= 32;
+            toupper(S[i]);
     }
 }
 
@@ -133,6 +135,7 @@ void lower() {
 
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'A' && S[i] <= 'Z')
-            S[i] += 32;
+            // S[i] += 32;
+            tolower(S[i]);
     }
 }
