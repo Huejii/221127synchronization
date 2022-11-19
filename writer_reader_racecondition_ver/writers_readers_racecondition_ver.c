@@ -33,11 +33,10 @@ int main()
 {
         // reader의 이름 배열 선언 및 초기화 Ex) reader1, reader2, ...
     char* readerName[5];
-    char* temp[2];
     for(int i = 0; i<5; i++)
     {
-        sprintf(temp, "%d",(i+1));
-        readerName[i] = strcat("reader", temp);
+        char* temp[2] = _itoa(i+1);
+        readerName[i] = strcat("reader", _itoa(i+1));
     }
 
     // writer의 이름 배열 선언 및 초기화
