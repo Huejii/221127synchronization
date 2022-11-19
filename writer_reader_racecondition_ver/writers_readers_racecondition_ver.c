@@ -23,8 +23,8 @@ char* S = "Happy Merry Christmas~! ";
 
 /*데이터에 접근한 순서를 파악하기 위한 count variable 선언*/
 int count = 1;
+FILE* file;
 
-FILE* shrfile;
 /*함수 선언*/
 void *reader_task(void* name);
 void *writer_upper_task(void* name);
@@ -50,6 +50,8 @@ int main()
     }
     pthread_join(writer_upper,NULL);
     pthread_join(writer_lower,NULL);
+    
+    fclose(file);
     return 0;
 }
 
@@ -60,7 +62,6 @@ void *reader_task(void* name)
     char currentTimeString[128];
     char* temp;
 
-    FILE* file;
     int i = 0;
         file = fopen("event.log", "a");
 
@@ -81,7 +82,6 @@ void *writer_upper_task(void* name)
     char currentTimeString[128];
     char* new_S;
 
-    FILE* file;
     int i = 0;
     file = fopen("event.log", "a");
 
@@ -105,7 +105,6 @@ void *writer_lower_task(void* name)
     char* new_S;
 
 
-    FILE* file;
     int i = 0;
     file = fopen("event.log", "a");
 
