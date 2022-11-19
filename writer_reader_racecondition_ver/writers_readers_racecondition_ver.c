@@ -50,7 +50,7 @@ int main()
     }
     pthread_join(writer_upper,NULL);
     pthread_join(writer_lower,NULL);
-    
+
     fclose(file);
     return 0;
 }
@@ -61,6 +61,7 @@ void *reader_task(void* name)
     struct tm* timeInfo;
     char currentTimeString[128];
     char* temp;
+    FILE* file;
 
     int i = 0;
         file = fopen("event.log", "a");
@@ -73,6 +74,7 @@ void *reader_task(void* name)
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
+    fclose(file);
 }
 
 void *writer_upper_task(void* name)
@@ -81,20 +83,19 @@ void *writer_upper_task(void* name)
     struct tm* timeInfo;
     char currentTimeString[128];
     char* new_S;
+    FILE* file_writer1;
 
     int i = 0;
-    file = fopen("event.log", "a");
+    file_writer1 = fopen("event.log", "a");
 
-    for (i = 0; i < 100; i++) {
-        time(&currentTime);
-        timeInfo = localtime(&currentTime);
-        strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
-        upper(new_S);
-        strncpy(S, new_S, strlen(new_S));
-        count++;
-    }
+    time(&currentTime);
+    timeInfo = localtime(&currentTime);
+    strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
+    char* N = "Goodbye 2022~!";
+    S = N;
+    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
     count++;
+    fclose(file_writer1;)
 }
 
 void *writer_lower_task(void* name)
@@ -103,26 +104,25 @@ void *writer_lower_task(void* name)
     struct tm* timeInfo;
     char currentTimeString[128];
     char* new_S;
-
+    FILE* file_writer2;
 
     int i = 0;
-    file = fopen("event.log", "a");
+    file_writer2 = fopen("event.log", "a");
 
-    for (i = 0; i < 100; i++) {
-        time(&currentTime);
-        timeInfo = localtime(&currentTime);
-        strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
-        lower(new_S);
-        strncpy(S, new_S, strlen(new_S));
-        count++;
-    }
+    time(&currentTime);
+    timeInfo = localtime(&currentTime);
+    strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
+    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
+    char* N = "Happy New Year~!";
+    S = N;
     count++;
+    fclose(file_writer2);
 }
 
 //문자열을 대문자로 바꾸는 함수
 void upper(char *new) {
-    int i;
+    char* N = "Goodbye 2022~!";
+    S = N;
     strncpy(new, S, strlen(S));
     for (int i = 0; i< strlen(S); i++) {
         if (S[i] >= 'a' && S[i] <= 'z')
@@ -133,6 +133,8 @@ void upper(char *new) {
 //문자열을 소문자로 바꾸는 함수
 void lower(char * new) {
     int i;
+    char* N = "Happy New Year~!";
+    S = N;
     strncpy(new, S, strlen(S));
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'A' && S[i] <= 'Z')
