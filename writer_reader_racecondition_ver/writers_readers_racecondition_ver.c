@@ -64,7 +64,7 @@ void *reader_task(void* name)
     int i = 0;
         file = fopen("event.log", "a");
 
-    for (i = 0; i < 10000; i++) {
+    for (i = 0; i < 100; i++) {
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
@@ -124,18 +124,19 @@ void *writer_lower_task(void* name)
 //문자열을 대문자로 바꾸는 함수
 void upper(char *new) {
     int i;
+    strcpy(new, S);
     for (int i = 0; i< strlen(S); i++) {
         if (S[i] >= 'a' && S[i] <= 'z')
-            new[i] = toupper(S[i]);
+            new[i] = toupper(new[i]);
     }
 }
 
 //문자열을 소문자로 바꾸는 함수
 void lower(char * new) {
     int i;
-
+    strcpy(new, S);
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'A' && S[i] <= 'Z')
-            new[i] = tolower(S[i]);
+            new[i] = tolower(new[i]);
     }
 }
