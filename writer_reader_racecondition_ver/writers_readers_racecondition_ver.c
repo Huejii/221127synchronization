@@ -54,7 +54,6 @@ int main()
 
 void *reader_task(void* name)
 {
-    printf("reader pid: %xd", getpid());
     time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
@@ -65,7 +64,6 @@ void *reader_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        sleep(1);
         printf("reader pid: %lx\t%s\n",pthread_self(), S);
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
@@ -74,7 +72,7 @@ void *reader_task(void* name)
 
 void *writer_221231(void* name)
 {
-        time_t currentTime;
+    time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
     char* N = "Goodbye 2022~!";
