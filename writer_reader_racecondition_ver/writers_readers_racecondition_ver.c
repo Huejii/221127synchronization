@@ -29,8 +29,8 @@ FILE* shrfile;
 void *reader_task(void* name);
 void *writer_upper_task(void* name);
 void *writer_lower_task(void* name);
-void upper(char * new);
-void lower(char*new);
+void upper();
+void lower();
 
 int main()
 {
@@ -83,7 +83,6 @@ void *writer_upper_task(void* name)
         time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
-    char* new_S;
 
     FILE* file;
     int i = 0;
@@ -93,8 +92,7 @@ void *writer_upper_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        //upper(new_S);
-        strcpy(S,"HAPPY MERRY CHRISTMAS");
+        upper();
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
@@ -117,8 +115,7 @@ void *writer_lower_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        //lower(new_S);
-        strcpy(S,"happy merry christmas");
+        lower();
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
@@ -130,7 +127,7 @@ void upper(char *new) {
     int i;
     for (int i = 0; i< strlen(S); i++) {
         if (S[i] >= 'a' && S[i] <= 'z')
-            new[i] = toupper(S[i]);
+            S[i] = toupper(S[i]);
     }
 }
 
@@ -140,6 +137,6 @@ void lower(char * new) {
 
     for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'A' && S[i] <= 'Z')
-            new[i] = tolower(S[i]);
+            S[i] = tolower(S[i]);
     }
 }
