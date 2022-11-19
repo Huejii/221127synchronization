@@ -67,6 +67,7 @@ void *reader_task(void* name)
     time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
+    char* temp;
 
     FILE* file;
     int i = 0;
@@ -79,7 +80,7 @@ void *reader_task(void* name)
         printf("%s\n", S);
 
         shrfile = fopen("merrychristmas.txt", "r");
-        char* temp = fgets(temp, 100, shrfile);
+        fgets(temp, 100, shrfile);
         fclose(shrfile);
         printf("%s\n", temp);
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, temp, count);
