@@ -95,7 +95,7 @@ void *writer_upper_task(void* name)
     S = N;
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
     count++;
-    fclose(file_writer1;)
+    fclose(file_writer1)
 }
 
 void *writer_lower_task(void* name)
