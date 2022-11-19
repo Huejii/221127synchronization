@@ -23,6 +23,7 @@ char* S = "Happy Merry Christmas~! ";
 /*데이터에 접근한 순서를 파악하기 위한 count variable 선언*/
 int count = 1;
 FILE* file;
+file = fopen("event.log", "a");
 
 /*함수 선언*/
 void *reader_task(void* name);
@@ -31,7 +32,6 @@ void *writer_230101(void* name);
 
 int main()
 {
-    file = fopen("event.log", "a");
     /*thread create*/
     pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
     pthread_create(&writer_upper,NULL,writer_221231,(void*)writerName[0]);
@@ -62,7 +62,6 @@ void *reader_task(void* name)
     char* temp;
 
     int i = 0;
-    file = fopen("event.log", "a");
     for (i = 0; i < 100; i++) {
         time(&currentTime);
         timeInfo = localtime(&currentTime);
