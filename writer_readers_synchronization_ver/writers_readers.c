@@ -65,7 +65,7 @@ void *reader_task(void* name)
 
     do {
         pthread_mutex_lock(&mutex);
-        
+
         readcount++;
         if(readcount == 1) pthread_mutex_lock(&shared_data_mutex);
         pthread_mutex_unlock(&mutex);
@@ -142,7 +142,7 @@ void *writer_230101(void* name)
         // 문자열 변경(write)
         S = N;
         // 진행 확인을 위한 출력
-        printf("writer thread id: %lx\t%s\n",pthread_self(), S);
+        printf("writer2 thread id: %lx\t%s\n",pthread_self(), S);
         // 추가로 확인하기 위해 로그파일에 기록
         fprintf(file, "%s\t%s\t%s\t%d\n", curr_time_str, (char*)name, S, count);
         pthread_mutex_unlock(&shared_data_mutex);
