@@ -83,8 +83,8 @@ void *writer_221231(void* name)
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
     S = N;
-    printf("%s\n", S);
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
+    printf("%s\n", S);
     count++;
 }
 
@@ -100,7 +100,7 @@ void *writer_230101(void* name)
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
     S = N;
-    printf("%s\n", S);
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
+    printf("%s\n", S);
     count++;
 }
