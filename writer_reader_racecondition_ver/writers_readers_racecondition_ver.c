@@ -35,8 +35,7 @@ int main()
     char* readerName[5];
     for(int i = 0; i<5; i++)
     {
-        char* temp[2] = _itoa(i+1);
-        readerName[i] = strcat("reader", _itoa(i+1));
+        sprintf(readerName[i], "%s%d", "reader", i+1);
     }
 
     // writer의 이름 배열 선언 및 초기화
