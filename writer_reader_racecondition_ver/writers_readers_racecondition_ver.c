@@ -27,32 +27,32 @@ void lower();
 void *reader_task();
 void *writer_upper_task();
 void *writer_lower_task();
-int *data_logger(char* name, void task());
+void *data_logger(void task(), char* name);
 
 int main()
 {
         // reader의 이름 배열 선언 및 초기화 Ex) reader1, reader2, ...
-    char* readerName[5];
     for(int i = 0; i<5; i++)
     {
         sprintf(readerName[i], "%s%d", "reader", i+1);
+        pthread_setname_np(reader[i], readerName[i]);
     }
 
     // writer의 이름 배열 선언 및 초기화
     char* writerName[2] = {"writer_upper", "writer_lower"};
 
     /*thread create*/
-    pthread_create(&reader[0],NULL,data_logger,reader_task(readerName[0]));
-    pthread_create(&reader[1],NULL,data_logger,reader_task(readerName[1]));
+    pthread_create(&reader[0],NULL,data_logger,(reader_task(), readerName[0]));
+    pthread_create(&reader[1],NULL,data_logger,(reader_task(),readerName[1]));
 
-    pthread_create(&writer_upper,NULL,data_logger,writer_upper_task(writerName[0]));  // 데이터를 대문자로 바꾸는 writer => HAPPY MERRY CHRISTMAS~!
+    pthread_create(&writer_upper,NULL,data_logger,(writer_upper_task(), writerName[0]);  // 데이터를 대문자로 바꾸는 writer => HAPPY MERRY CHRISTMAS~!
 
-    pthread_create(&reader[2],NULL,data_logger,reader_task(readerName[2]));
-    pthread_create(&reader[3],NULL,data_logger,reader_task(readerName[3]));
+    pthread_create(&reader[2],NULL,data_logger,(reader_task(),readerName[2]));
+    pthread_create(&reader[3],NULL,data_logger,(reader_task(),readerName[3]));
 
-    pthread_create(&writer_lower,NULL,data_logger,writer_upper_task(writerName[1]));    // 데이터를 소문자로 바꾸는 writer => happy merry christmas~!
+    pthread_create(&writer_lower,NULL,data_logger,(writer_upper_task(), writerName[1]));    // 데이터를 소문자로 바꾸는 writer => happy merry christmas~!
 
-    pthread_create(&reader[4],NULL,data_logger,reader_task(readerName[4]));
+    pthread_create(&reader[4],NULL,data_logger,(reader_task(),readerName[4]));
 
 
     for(int i = 0; i<5; i++)
@@ -64,7 +64,7 @@ int main()
     return 0;
 }
 
-void *reader_task(char* reader_name)
+void *reader_task()
 {
     printf("%s", S);
 }
@@ -78,7 +78,7 @@ void *writer_upper_task()
     }
 }
 
-void *writer_lower_task(void * writer_name)
+void *writer_lower_task()
 {
     int i;
     for (i = 0; S[i] != NULL; i++) {
@@ -105,7 +105,7 @@ void lower() {
     }
 }
 
-int *data_logger(char* name, void task())
+void *data_logger(void task(), char* name)
 {
     time_t currentTime;
     struct tm* timeInfo;
