@@ -55,6 +55,7 @@ int main()
 
 void *reader_task(void* name)
 {
+    printf("reader pid: %d", getpid());
     time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
@@ -74,6 +75,7 @@ void *reader_task(void* name)
 
 void *writer_221231(void* name)
 {
+    printf("writer pid: %d", getpid());
         time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
@@ -90,11 +92,12 @@ void *writer_221231(void* name)
 
 void *writer_230101(void* name)
 {
+    printf("writer2 pid: %d", getpid());
     time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
     char* N = "Happy New Year~!";
-    
+
     time(&currentTime);
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
