@@ -36,7 +36,7 @@ void lower();
 int main()
 {
     shrfile = fopen("merrychristmas.txt", "a");
-    fputs("Happy Merry Chrismas~!", shrfile);
+    fputs("Happy Merry Chrismas~!\n", shrfile);
     fclose(shrfile);
 
     /*thread create*/
@@ -78,11 +78,11 @@ void *reader_task(void* name)
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
         printf("%s\n", S);
 
-        // shrfile = fopen("merrychristmas.txt", "r");
-        // char* temp = fgets(temp, 100, shrfile);
-        // fclose(shrfile);
-        // printf("%s\n", temp);
-        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
+        shrfile = fopen("merrychristmas.txt", "r");
+        char* temp = fgets(temp, 100, shrfile);
+        fclose(shrfile);
+        printf("%s\n", temp);
+        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, temp, count);
         count++;
     }
     fclose(file);
@@ -93,6 +93,7 @@ void *writer_upper_task(void* name)
         time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
+    char* temp = "HAPPY MERRY CHRISTMAS~!\n";
 
     FILE* file;
     int i = 0;
@@ -102,25 +103,19 @@ void *writer_upper_task(void* name)
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
 
-        // shrfile = fopen("merrychristmas.txt", "rw");
-        // char* temp = fgets(temp, 100, shrfile);
-        // if (temp[i] >= 'a' && temp[i] <= 'z')
-        // {
-        //     S[i] = toupper(S[i]);
-        // }
-        // fputs()
-        // fclose(shrfile);
-        // printf("%s", temp);
+    shrfile = fopen("merrychristmas.txt", "a+");
+    fprintf(shrfile, "%s", temp);
+    fclose(shrfile);
 
-    for (int i = 0; i< strlen(S); i++) {
-    if (S[i] >= 'a' && S[i] <= 'z')
-    {
-        printf("변경전: %c\t",S[i]);
-        S[i] = toupper(S[i]);
-        printf("변경후: %c\n",S[i]);
-    }
-    }
-    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
+    // for (int i = 0; i< strlen(S); i++) {
+    // if (S[i] >= 'a' && S[i] <= 'z')
+    // {
+    //     printf("변경전: %c\t",S[i]);
+    //     S[i] = toupper(S[i]);
+    //     printf("변경후: %c\n",S[i]);
+    // }
+    // }
+    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, temp, count);
 
     count++;
     fclose(file);
@@ -131,6 +126,7 @@ void *writer_lower_task(void* name)
     time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
+    char* temp = "happy merry christmas~!\n";
 
     FILE* file;
     int i = 0;
@@ -139,13 +135,18 @@ void *writer_lower_task(void* name)
     time(&currentTime);
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-    for (int i = 0; i< strlen(S); i++) {
-    if (S[i] >= 'A' && S[i] <= 'Z')
-        printf("변경전: %c\t",S[i]);
-        S[i] = tolower(S[i]);
-        printf("변경후: %c\n",S[i]);
-    }
-    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
+
+        shrfile = fopen("merrychristmas.txt", "a+");
+    fprintf(shrfile, "%s", temp);
+    fclose(shrfile);
+
+    // for (int i = 0; i< strlen(S); i++) {
+    // if (S[i] >= 'A' && S[i] <= 'Z')
+    //     printf("변경전: %c\t",S[i]);
+    //     S[i] = tolower(S[i]);
+    //     printf("변경후: %c\n",S[i]);
+    // }
+    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, temp, count);
 
     count++;
     fclose(file);
