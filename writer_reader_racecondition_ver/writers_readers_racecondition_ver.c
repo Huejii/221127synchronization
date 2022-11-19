@@ -20,10 +20,12 @@ char* writerName[2] = {"writer_upper", "writer_lower"}; //writer
 
 /*reader와 writer가 접근할 문자열 선언*/
 char* S = "Happy Merry Christmas~!";
+//FILE* shrfile;
 
 /*데이터에 접근한 순서를 파악하기 위한 count variable 선언*/
 int count = 1;
 
+FILE* shrfile;
 /*함수 선언*/
 void *reader_task(void* name);
 void *writer_upper_task(void* name);
@@ -33,6 +35,10 @@ void lower();
 
 int main()
 {
+    shrfile = fopen("merrychristmas.txt", "a");
+    fputs("Happy Merry Chrismas~!", shrfile);
+    fclose(shrfile);
+
     /*thread create*/
     pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
     
@@ -71,9 +77,14 @@ void *reader_task(void* name)
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
         printf("%s\n", S);
-        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
 
+        // shrfile = fopen("merrychristmas.txt", "r");
+        // char* temp = fgets(temp, 100, shrfile);
+        // fclose(shrfile);
+        // printf("%s\n", temp);
+        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
+        fclose(file);
     }
 }
 
@@ -90,6 +101,17 @@ void *writer_upper_task(void* name)
     time(&currentTime);
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
+
+        // shrfile = fopen("merrychristmas.txt", "rw");
+        // char* temp = fgets(temp, 100, shrfile);
+        // if (temp[i] >= 'a' && temp[i] <= 'z')
+        // {
+        //     S[i] = toupper(S[i]);
+        // }
+        // fputs()
+        // fclose(shrfile);
+        // printf("%s", temp);
+
     for (int i = 0; i< strlen(S); i++) {
     if (S[i] >= 'a' && S[i] <= 'z')
     {
@@ -101,6 +123,7 @@ void *writer_upper_task(void* name)
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
 
     count++;
+    fclose(file);
 }
 
 void *writer_lower_task(void* name)
@@ -125,6 +148,7 @@ void *writer_lower_task(void* name)
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
 
     count++;
+    fclose(file);
 
 }
 
