@@ -127,7 +127,7 @@ void *writer_230101(void* name)
     char* N = "Happy New Year~!";   // S 문자열을 변경할 문자열
     
     do{
-        thread_mutex_lock(shared_data_mutex);
+        pthread_mutex_lock(shared_data_mutex);
         // 100번 수행한다.
         for (int i = 0; i < 100; i++) {
 
