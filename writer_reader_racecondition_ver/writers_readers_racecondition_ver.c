@@ -11,7 +11,7 @@
 pthread_t reader[5], writer_upper, writer_lower;
 
 // 스레드의 이름 배열 선언 및 초기화
-char* readerrName[2] = {"reader01", "reader02", "reader03", "reader04", "reader05"}; //reader
+char* readerrName[5] = {"reader01", "reader02", "reader03", "reader04", "reader05"}; //reader
 char* writerName[2] = {"writer_upper", "writer_lower"}; //writer
 
 /*semaphore variable 선언*/
