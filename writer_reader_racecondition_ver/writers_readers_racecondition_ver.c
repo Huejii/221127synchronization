@@ -121,7 +121,7 @@ void *writer_lower_task(void* name)
 //문자열을 대문자로 바꾸는 함수
 void upper() {
     int i;
-    for (i = 0; i< sizeof(S); i++) {
+    for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'a' && S[i] <= 'z')
             S[i] -= 'a' - 'A';
     }
@@ -131,7 +131,7 @@ void upper() {
 void lower() {
     int i;
 
-    for (i = 0; i< sizeof(S); i++) {
+    for (i = 0; i< strlen(S); i++) {
         if (S[i] >= 'A' && S[i] <= 'Z')
             S[i] += 'a' - 'A';
     }
