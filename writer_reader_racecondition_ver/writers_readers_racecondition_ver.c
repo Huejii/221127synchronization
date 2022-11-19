@@ -55,7 +55,7 @@ int main()
 
 void *reader_task(void* name)
 {
-    printf("reader pid: %d", getpid());
+    printf("reader pid: %xd", getpid());
     time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
@@ -67,7 +67,7 @@ void *reader_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-        printf("%s\n", S);
+        printf("reader pid: %x\t%s\n",getpid(), S);
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
@@ -75,7 +75,6 @@ void *reader_task(void* name)
 
 void *writer_221231(void* name)
 {
-    printf("writer pid: %d", getpid());
         time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
@@ -85,14 +84,13 @@ void *writer_221231(void* name)
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
     S = N;
+    printf("writer1 pid: %x\t%s\n",getpid(), S);
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
-    printf("%s\n", S);
     count++;
 }
 
 void *writer_230101(void* name)
 {
-    printf("writer2 pid: %d", getpid());
     time_t currentTime;
     struct tm* timeInfo;
     char currentTimeString[128];
@@ -102,7 +100,7 @@ void *writer_230101(void* name)
     timeInfo = localtime(&currentTime);
     strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
     S = N;
+    printf("writer pid: %x\t%s\n",getpid(), S);
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
-    printf("%s\n", S);
     count++;
 }
