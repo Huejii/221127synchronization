@@ -101,7 +101,6 @@ void *writer_221231(void* name)
 
     do{
         pthread_mutex_lock(&shared_data_mutex);
-        more_write =1;
         // 10번 수행한다.
         // 진행 확인을 위한 로그파일 생성 및 form
         file = fopen("event.log", "a");
