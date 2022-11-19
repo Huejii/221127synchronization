@@ -61,7 +61,7 @@ void *reader_task(void* name)
     time_t current_time;
     char curr_time_str[128];
     int i = 0;
-    int more_read = 10;
+    int more_read = 100;
 
     do {
         pthread_mutex_lock(&mutex);
