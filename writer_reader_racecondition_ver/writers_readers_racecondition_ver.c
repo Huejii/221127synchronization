@@ -76,8 +76,6 @@ void *reader_task(void* name)
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
     }
-
-    fclose(file);
 }
 
 void *writer_upper_task(void* name)
@@ -88,17 +86,17 @@ void *writer_upper_task(void* name)
 
     FILE* file;
     int i = 0;
-        file = fopen("event.log", "a");
+    file = fopen("event.log", "a");
 
-    time(&currentTime);
-    timeInfo = localtime(&currentTime);
-    strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-
-    upper();
-    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
-
+    for (i = 0; i < 10000; i++) {
+        time(&currentTime);
+        timeInfo = localtime(&currentTime);
+        strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
+        upper();
+        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
+        count++;
+    }
     count++;
-    fclose(file);
 }
 
 void *writer_lower_task(void* name)
@@ -111,14 +109,15 @@ void *writer_lower_task(void* name)
     int i = 0;
     file = fopen("event.log", "a");
 
-    time(&currentTime);
-    timeInfo = localtime(&currentTime);
-    strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
-    lower();
-    fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
-
+    for (i = 0; i < 10000; i++) {
+        time(&currentTime);
+        timeInfo = localtime(&currentTime);
+        strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
+        lower();
+        fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
+        count++;
+    }
     count++;
-    fclose(file);
 }
 
 //문자열을 대문자로 바꾸는 함수
