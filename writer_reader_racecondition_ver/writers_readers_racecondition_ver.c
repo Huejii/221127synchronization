@@ -27,7 +27,7 @@ void lower();
 void *reader_task();
 void *writer_upper_task();
 void *writer_lower_task();
-int data_logger(char* name, void task());
+int *data_logger(char* name, void task());
 
 int main()
 {
