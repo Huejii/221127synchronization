@@ -67,6 +67,7 @@ void *reader_task(void* name)
         time(&currentTime);
         timeInfo = localtime(&currentTime);
         strftime(currentTimeString, 128, "%Y-%m-%d %H:%M:%S", timeInfo);
+        sleep(1);
         printf("reader pid: %x\t%s\n",getpid(), S);
         fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
         count++;
