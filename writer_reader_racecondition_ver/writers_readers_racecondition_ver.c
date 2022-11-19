@@ -105,7 +105,7 @@ void lower() {
     }
 }
 
-int data_logger(char* name, void task())
+int *data_logger(char* name, void task())
 {
     time_t currentTime;
     struct tm* timeInfo;
