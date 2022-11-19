@@ -77,6 +77,7 @@ void *writer_221231(void* name)
     char currentTimeString[128];
     char* N = "Goodbye 2022~!";
 
+    for (i = 0; i < 100; i++) {
     file = fopen("event.log", "a");
     time(&currentTime);
     timeInfo = localtime(&currentTime);
@@ -85,6 +86,7 @@ void *writer_221231(void* name)
     printf("writer1 pid: %lx\t%s\n",pthread_self(), S);
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
     count++;
+    }
 }
 
 void *writer_230101(void* name)
@@ -94,6 +96,7 @@ void *writer_230101(void* name)
     char currentTimeString[128];
     char* N = "Happy New Year~!";
     
+    for (i = 0; i < 100; i++) {
     file = fopen("event.log", "a");
     time(&currentTime);
     timeInfo = localtime(&currentTime);
@@ -101,4 +104,5 @@ void *writer_230101(void* name)
     S = N;
     printf("writer pid: %lx\t%s\n",pthread_self(), S);
     fprintf(file, "%s\t%s\t%s\t%d\n", currentTimeString, (char*)name, S, count);
+    }
 }
