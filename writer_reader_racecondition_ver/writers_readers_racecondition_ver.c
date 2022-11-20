@@ -28,14 +28,17 @@ void *writer_230101(void* name);
 
 int main()
 {
+
+    printf("// Notion: %s\n", S);
+
     /*thread create*/
     pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
     pthread_create(&writer1, NULL,writer_221225,(void*)writerName[0]);
     pthread_create(&reader[1],NULL,reader_task,(void*)readerName[1]);
-    pthread_create(&reader[2],NULL,reader_task,(void*)readerName[2]);
     pthread_create(&writer2,NULL,writer_221231,(void*)writerName[1]);
-    pthread_create(&reader[3],NULL,reader_task,(void*)readerName[3]);
+    pthread_create(&reader[2],NULL,reader_task,(void*)readerName[2]);
     pthread_create(&writer3,NULL,writer_230101,(void*)writerName[2]);
+    pthread_create(&reader[3],NULL,reader_task,(void*)readerName[3]);
     pthread_create(&reader[4],NULL,reader_task,(void*)readerName[4]);
 
     // thread 종료
