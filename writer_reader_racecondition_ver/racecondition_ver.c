@@ -78,7 +78,6 @@ void *writer_upper_task(void* name)
     struct tm* time_info;
     time_t current_time;
     char curr_time_str[128];
-    // char* N = "Goodbye 2022~!";    // S 문자열을 변경할 dest 문자열
 
     // 100번 수행한다.
     for (int i = 0; i < 100; i++) {
@@ -110,7 +109,6 @@ void *writer_lower_task(void* name)
     struct tm* time_info;
     time_t current_time;
     char curr_time_str[128];
-    //char* N = "Happy New Year~!";   // S 문자열을 변경할 dest 문자열
     
     // 100번 수행한다.
     for (int i = 0; i < 100; i++) {
