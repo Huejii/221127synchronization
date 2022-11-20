@@ -4,6 +4,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <time.h>
+#include <ctype.h>
 #define READER_SIZE 5
 
 /*스레드 ID 선언*/
@@ -22,8 +23,8 @@ FILE* file;
 
 /*함수 선언*/
 void *reader_task(void* name);
-void *writer_221231(void* name);
-void *writer_230101(void* name);
+void *writer_upper(void* name);
+void *writer_lower(void* name);
 
 int main()
 {
@@ -85,7 +86,7 @@ void *writer_upper(void* name)
         // 진행 확인을 위한 로그파일 생성 및 form
         file = fopen("event.log", "a");
         time(&current_time);
-        time_info = localtime(&current_time;);
+        time_info = localtime(&current_time);
         strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
 
         // 문자열 변경(write)

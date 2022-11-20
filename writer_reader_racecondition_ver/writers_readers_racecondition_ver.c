@@ -85,7 +85,7 @@ void *writer_221231(void* name)
         // 진행 확인을 위한 로그파일 생성 및 form
         file = fopen("event.log", "a");
         time(&current_time);
-        time_info = localtime(&current_time;);
+        time_info = localtime(&current_time);
         strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
 
         // 문자열 변경(write)
