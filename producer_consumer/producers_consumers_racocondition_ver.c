@@ -42,22 +42,6 @@ void circular_init();
 void* teamA_get_item();
 void* teamB_get_item();
 
-void circular_init()
-{
-    for(int i =0; i < 10; i++)
-    {
-        teamA_buffer->item[i] = i+1;
-    }
-
-    for(int i =0; i < 10; i++)
-    {
-        teamB_buffer->item[i] = i+11;
-    }
-}
-
-void* teamA_get_item();
-void* teamB_get_item();
-
 int main()
 {
 
@@ -90,18 +74,21 @@ int main()
         }
         i++;
 
-        if(teamA_buffer->item[teamA_buffer->tail] == 0 && teamB_buffer->item[teamB_buffer->tail] == 0)
+        if(teamA_buffer->tail == teamA_buffer->head && teamB_buffer->tail == teamB_buffer->head)
         {
+            printf("i ==200, C\n");
             i=200; // 게임 종료
             winner = 'C';
         }
-        else if(teamA_buffer->item[teamA_buffer->tail] == 0)
+        else if(teamA_buffer->tail == teamA_buffer->head)
         {
+            printf("i ==200, A\n");
             i=200; // 게임 종료
             winner = 'A';
         }
-        else if(teamB_buffer->item[teamB_buffer->tail] == 0)
-        {
+        else if(teamB_buffer->tail == teamB_buffer->head)
+        {   
+            printf("i ==200, B\n");
             i=200; // 게임 종료
             winner = 'B';
         }
@@ -134,4 +121,104 @@ int main()
     }
     fclose(file);
     return 0;
+}
+
+void circular_init()
+{
+    teamA_buffer->head = teamA_buffer->tail = 0; // 태그 값을 0으로 초기화
+    teamB_buffer->head = teamB_buffer->tail = 0; // 태그 값을 0으로 초기화
+    
+    for(int i =0; i < 10; i++)
+    {
+        // buffer에 데이터 저장
+        teamA_buffer->item[teamA_buffer->head] = i+1;
+
+        // head tail 조정
+        teamA_buffer->head = ( teamA_buffer->head +1) % MAX_CIRCULAR_SIZE; // head 증가
+        if ( teamA_buffer->head == teamA_buffer->tail ){ // 버퍼가 모두 찼다면
+            printf("버퍼가 가득 찼습니다.");
+        }
+
+    }
+
+    for(int i =0; i < 10; i++)
+    {
+        teamB_buffer->item[teamB_buffer->head] = i+11;
+
+        // head tail 조정
+        teamB_buffer->head = ( teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; // head 증가
+        if ( teamB_buffer->head == teamB_buffer->tail ){ // 버퍼가 모두 찼다면
+            printf("버퍼가 가득 찼습니다.");
+        }
+    }
+
+}
+
+void* teamA_get_item(void* name)
+{
+    struct tm* time_info;
+    time_t current_time;
+    char curr_time_str[128];
+    int i = 0;
+
+    file = fopen("event.log", "a");
+        // 진행 확인을 위한 로그파일 생성 및 form
+        time(&current_time);
+        time_info = localtime(&current_time);
+        strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
+        int temp; // 데이터를 옮기기 위한 임시 저장소
+
+
+        // 데이터 가져오기
+        // 큐에 데이터가 없다면 복귀
+        if ( teamB_buffer->head == teamB_buffer->tail){
+            printf("A: B팀의 버퍼에 데이터가 없습니다.");
+            return 0; // 테이터 없음
+        }
+
+        temp = teamA_buffer->item[teamA_buffer->head] = teamB_buffer->item[teamB_buffer->tail];
+        teamA_buffer->head = (teamA_buffer->head +1) % MAX_CIRCULAR_SIZE; //A팀 head 증가
+        teamB_buffer->item[teamB_buffer->tail] = 0;
+        teamB_buffer->tail = ( teamB_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //V팀 tail 증가
+
+        // 진행 확인을 위한 출력
+        printf("%s thread id: %lx\t // get B->A item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
+        // 추가로 확인하기 위해 로그파일에 기록
+        fprintf(file, "%s\t%s\t%d\n", curr_time_str, (char*)name, count);
+        count++;
+}
+
+void* teamB_get_item(void* name)
+{
+        struct tm* time_info;
+    time_t current_time;
+    char curr_time_str[128];
+    
+    // 100번 수행한다.
+        // 진행 확인을 위한 로그파일 생성 및 form
+        file = fopen("event.log", "a");
+        time(&current_time);
+        time_info = localtime(&current_time);
+        strftime(curr_time_str, 128, "%Y-%m-%d %H:%M:%S", time_info);
+        int temp; // 데이터를 옮기기 위한 임시 저장소
+
+
+        // 데이터 가져오기
+        // 큐에 데이터가 없다면 복귀
+        if ( teamA_buffer->head == teamA_buffer->tail){
+            printf("B: A팀의 버퍼에 데이터가 없습니다.");
+            return 0; // 테이터 없음
+        }
+
+        // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
+        temp = teamB_buffer->item[teamB_buffer->head] = teamA_buffer->item[teamA_buffer->tail];
+        teamB_buffer->head = (teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; //B팀 head 증가
+        teamA_buffer->item[teamA_buffer->tail] = 0;
+        teamA_buffer->tail = ( teamA_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //A팀 tail 증가
+
+        // 진행 확인을 위한 출력
+        printf("%s thread id: %lx\t // get A->B item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
+        // 추가로 확인하기 위해 로그파일에 기록
+        fprintf(file, "%s\t%s\t%d\n", curr_time_str, (char*)name, count);
+        count++;
 }
