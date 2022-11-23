@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <unistd.h>
 #define MAX_CIRCULAR_SIZE 20000             // 링버퍼가 갖는 아이템 개수
 #define TEAM_THREAD_SIZE 5
 
