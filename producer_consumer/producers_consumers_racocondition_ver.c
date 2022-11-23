@@ -59,7 +59,7 @@ int main()
     {
         srand(time(NULL));
         random = rand()%2; // 난수 생성
-        printf(random);
+        printf("%d\n",random);
         switch (random){
             case 0:
                 {
