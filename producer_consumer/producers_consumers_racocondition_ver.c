@@ -6,6 +6,7 @@
 #define TEAM_THREAD_SIZE 5
 
 /*
+    - 버퍼 게임
     2개의 팀이 있다. 각 팀에는 circular buffer가 한개씩 부여된다.
     각 팀의 thread는 상대 팀의 버퍼에서 자신의 버퍼로 숫자 1~20이 적힌 아이템을 가져온다.
     게임이 종료되는 순간 버퍼에 더 많은 아이템이 있는 팀이 승리한다.
@@ -60,24 +61,77 @@ void* teamB_get_item();
 int main()
 {
 
-    printf("// Notion: %s\n", S);
+    int random = 0; // 정수형 변수 선언
+    char winner;
+    int i;
+
+	for (int i = 0; i < 10; i++) { // 10번 반복
+
+		random = rand()%2; // 난수 생성
+
+		printf("%d\n", random); // 출력
+    }
+
+
+    printf("// 버퍼게임 시작\n");
+
+
 
     /*thread create*/
-    for(int i = 0; i <TEAM_THREAD_SIZE; i++)
+    for(i = 0; i <100; i++)
     {
-        pthread_create(&reader[0],NULL,reader_task,(void*)readerName[0]);
-        pthread_create(&writer1, NULL,writer_221225,(void*)writerName[0]);
+        srand(time(NULL));
+        random = rand()%2; // 난수 생성
+        switch (random){
+            case 1:
+                {pthread_create(&A_thread[i%TEAM_THREAD_SIZE],NULL,teamA_get_item,(void*)A_name[i%TEAM_THREAD_SIZE]);}
+            case 2:
+                {pthread_create(&B_thread[i%TEAM_THREAD_SIZE], NULL,teamB_get_item,(void*)B_name[i%TEAM_THREAD_SIZE]); break;}
+        }
+        i++;
+
+        if(teamA_buffer->item[teamA_buffer->tail] == NULL && teamB_buffer->item[teamB_buffer->tail] == NULL)
+        {
+            i=200; // 게임 종료
+            winner = 'C';
+        }
+        else if(teamA_buffer->item[teamA_buffer->tail] == NULL)
+        {
+            i=200; // 게임 종료
+            winner = 'A';
+        }
+        else if(teamB_buffer->item[teamB_buffer->tail] = NULL)
+        {
+            i=200; // 게임 종료
+            winner = 'B';
+        }
+    }
+    if(i != 200)
+    {
+        if(teamA_buffer->tail < teamB_buffer->tail)
+        {
+            winner = 'A';
+        }
+        else if(teamA_buffer->tail > teamB_buffer->tail)
+        {
+            winner = 'B';
+        }else
+            winner = 'C';
+    }
+
+    switch(winner)
+    {
+        case 'c': {printf("동점입니다.\n"); break;}
+        defualt: printf("승자는 %c입니다.\n", winner);
+
     }
 
     // thread 종료
     for(int i = 0; i<5; i++)
     {
-        pthread_join(reader[i],NULL);
+        pthread_join(A_thread[i],NULL);
+        pthread_join(B_thread[i],NULL);
     }
-    pthread_join(writer1,NULL);
-    pthread_join(writer2,NULL);
-    pthread_join(writer3,NULL);
-
     fclose(file);
     return 0;
 }
