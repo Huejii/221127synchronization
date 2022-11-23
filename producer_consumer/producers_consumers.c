@@ -82,20 +82,15 @@ int main()
     }
     if(teamA_buffer->head - teamA_buffer->tail == teamB_buffer->head - teamB_buffer->tail)
     {
-        printf("i ==200, C\n");
         printf("동점입니다.\n");
     }
     else if(teamA_buffer->head - teamA_buffer->tail > teamB_buffer->head - teamB_buffer->tail)
     {
-        printf("i ==200, A\n");
-        i=200; // 게임 종료
-        printf("승자는 A팀입니다.\n");
+        printf("A팀의 승리입니다.\n");
     }
     else
-    {   
-        printf("i ==200, B\n");
-        i=200; // 게임 종료
-        printf("승자는 B팀입니다.\n");
+    { 
+        printf("B팀의 승리입니다.\n");
     }
 
     // thread 종료
