@@ -58,7 +58,9 @@ int main()
     for(i = 0; i <1000; i++)
     {
         srand(time(NULL));
-        random = rand()%2; // 난수 생성
+        random = rand();
+        printf("%d\n",random);
+        random %= 2; // 난수 생성
         printf("%d\n",random);
         switch (random){
             case 0:
