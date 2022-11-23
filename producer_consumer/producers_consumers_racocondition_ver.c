@@ -3,7 +3,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <unistd.h>
-#define MAX_CIRCULAR_SIZE 2000             // 링버퍼가 갖는 아이템 개수
+#define MAX_CIRCULAR_SIZE 20             // 링버퍼가 갖는 아이템 개수
 #define TEAM_THREAD_SIZE 5
 
 /*
@@ -55,7 +55,7 @@ int main()
     srand(time(NULL));
 
     /*thread create*/
-    for(i = 0; i <2000; i++)
+    for(i = 0; i <100; i++)
     {
         random = rand(); // 난수 생성
         random %= 2; // 난수 생성
@@ -116,7 +116,7 @@ void circular_init()
     // teamB_buffer->head=0;
     // teamB_buffer->tail = 0; // 태그 값을 0으로 초기화
     
-    for(int i =0; i < 1000; i++)
+    for(int i =0; i < 10; i++)
     {
         // buffer에 데이터 저장
         teamA_buffer->item[teamA_buffer->head] = i+1;
@@ -129,9 +129,9 @@ void circular_init()
 
     }
 
-    for(int i =0; i < 1000; i++)
+    for(int i =0; i < 10; i++)
     {
-        teamB_buffer->item[teamB_buffer->head] = i+1001;
+        teamB_buffer->item[teamB_buffer->head] = i+11;
 
         // head tail 조정
         teamB_buffer->head = ( teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; // head 증가
@@ -144,55 +144,48 @@ void circular_init()
 
 void* teamA_get_item(void* name)
 {
-    int temp; // 데이터를 옮기기 위한 임시 저장소
-
-    for(int i =0; i < 10; i++)
-    {
-        // 데이터 가져오기
-        // 큐에 데이터가 없다면 복귀
-        if ( teamB_buffer->head == teamB_buffer->tail){
-            printf("A: B팀의 버퍼에 데이터가 없습니다.");
-            winner = 'A';
-            printf("승자는 %c입니다.\n", winner);
-            return 0; // 테이터 없음
-        }
-        printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
-        temp = teamA_buffer->item[teamA_buffer->head] = teamB_buffer->item[teamB_buffer->tail];
-        teamA_buffer->head = (teamA_buffer->head +1) % MAX_CIRCULAR_SIZE; //A팀 head 증가
-        sleep(1);
-        teamB_buffer->item[teamB_buffer->tail] = 0;
-        teamB_buffer->tail = ( teamB_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //V팀 tail 증가
-
-        // 진행 확인을 위한 출력
-        printf("result: %s thread id: %lx\t // get B->A item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
-        count++;
+int temp; // 데이터를 옮기기 위한 임시 저장소
+    // 데이터 가져오기
+    // 큐에 데이터가 없다면 복귀
+    if ( teamB_buffer->head == teamB_buffer->tail){
+        printf("A: B팀의 버퍼에 데이터가 없습니다.");
+        winner = 'A';
+        printf("승자는 %c입니다.\n", winner);
+        return 0; // 테이터 없음
     }
+    printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
+    temp = teamA_buffer->item[teamA_buffer->head] = teamB_buffer->item[teamB_buffer->tail];
+    teamA_buffer->head = (teamA_buffer->head +1) % MAX_CIRCULAR_SIZE; //A팀 head 증가
+    sleep(1);
+    teamB_buffer->item[teamB_buffer->tail] = 0;
+    teamB_buffer->tail = ( teamB_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //V팀 tail 증가
+
+    // 진행 확인을 위한 출력
+    printf("result: %s thread id: %lx\t // get B->A item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
+    count++;
 }
 
 void* teamB_get_item(void* name)
 {
     int temp; // 데이터를 옮기기 위한 임시 저장소
-    for(int i =0; i < 10; i++)
-    {
-        // 데이터 가져오기
-        // 큐에 데이터가 없다면 복귀
-        if ( teamA_buffer->head == teamA_buffer->tail){
-            printf("B: A팀의 버퍼에 데이터가 없습니다.");
-            winner = 'B';
-            printf("승자는 %c입니다.\n", winner);
-            return 0; // 테이터 없음
-        }
-
-        // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
-        printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
-        temp = teamB_buffer->item[teamB_buffer->head] = teamA_buffer->item[teamA_buffer->tail];
-        teamB_buffer->head = (teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; //B팀 head 증가
-        sleep(1);
-        teamA_buffer->item[teamA_buffer->tail] = 0;
-        teamA_buffer->tail = ( teamA_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //A팀 tail 증가
-
-        // 진행 확인을 위한 출력
-        printf("result: %s thread id: %lx\t // get A->B item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n\n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
-        count++;
+    // 데이터 가져오기
+    // 큐에 데이터가 없다면 복귀
+    if ( teamA_buffer->head == teamA_buffer->tail){
+        printf("B: A팀의 버퍼에 데이터가 없습니다.");
+        winner = 'B';
+        printf("승자는 %c입니다.\n", winner);
+        return 0; // 테이터 없음
     }
+
+    // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
+    printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
+    temp = teamB_buffer->item[teamB_buffer->head] = teamA_buffer->item[teamA_buffer->tail];
+    teamB_buffer->head = (teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; //B팀 head 증가
+    sleep(1);
+    teamA_buffer->item[teamA_buffer->tail] = 0;
+    teamA_buffer->tail = ( teamA_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //A팀 tail 증가
+
+    // 진행 확인을 위한 출력
+    printf("result: %s thread id: %lx\t // get A->B item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n\n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
+    count++;
 }
