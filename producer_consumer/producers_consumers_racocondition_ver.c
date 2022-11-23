@@ -37,7 +37,7 @@ char* B_name[TEAM_THREAD_SIZE] = {"B_player01", "B_player02", "B_player03", "B_p
 
 /*데이터에 접근한 순서를 파악하기 위한 count variable 선언*/
 int count = 1;
-
+char winner;
 
 void circular_init();
 void* teamA_get_item();
@@ -47,7 +47,6 @@ int main()
 {
 
     int random = 0; // 정수형 변수 선언
-    char winner;
     int i;
     
     circular_init();
@@ -153,7 +152,9 @@ void* teamA_get_item(void* name)
         // 큐에 데이터가 없다면 복귀
         if ( teamB_buffer->head == teamB_buffer->tail){
             printf("A: B팀의 버퍼에 데이터가 없습니다.");
-            return 0; // 테이터 없음
+            winner = 'A';
+            printf("승자는 %c입니다.\n", winner);
+            return; // 테이터 없음
         }
 
         temp = teamA_buffer->item[teamA_buffer->head] = teamB_buffer->item[teamB_buffer->tail];
@@ -177,7 +178,9 @@ void* teamB_get_item(void* name)
         // 큐에 데이터가 없다면 복귀
         if ( teamA_buffer->head == teamA_buffer->tail){
             printf("B: A팀의 버퍼에 데이터가 없습니다.");
-            return 0; // 테이터 없음
+            winner = 'B';
+            printf("승자는 %c입니다.\n", winner);
+            return; // 테이터 없음
         }
 
         // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
