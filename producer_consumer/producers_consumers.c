@@ -3,7 +3,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <unistd.h>
-#define MAX_CIRCULAR_SIZE 100             // 링버퍼가 갖는 아이템 개수
+#define MAX_CIRCULAR_SIZE 90             // 링버퍼가 갖는 아이템 개수
 #define TEAM_THREAD_SIZE 5
 
 /*
@@ -80,24 +80,24 @@ int main()
         }
         i++;
     }
-        if(teamA_buffer->tail == teamA_buffer->head && teamB_buffer->tail == teamB_buffer->head)
-        {
-            printf("i ==200, C\n");
-            i=200; // 게임 종료
-            winner = 'C';
-        }
-        else if(teamA_buffer->tail == teamA_buffer->head)
-        {
-            printf("i ==2000, A\n");
-            i=200; // 게임 종료
-            winner = 'A';
-        }
-        else if(teamB_buffer->tail == teamB_buffer->head)
-        {   
-            printf("i ==200, B\n");
-            i=200; // 게임 종료
-            winner = 'B';
-        }
+    if(teamA_buffer->tail == teamA_buffer->head && teamB_buffer->tail == teamB_buffer->head)
+    {
+        printf("i ==200, C\n");
+        i=200; // 게임 종료
+        winner = 'C';
+    }
+    else if(teamA_buffer->tail == teamA_buffer->head)
+    {
+        printf("i ==2000, A\n");
+        i=200; // 게임 종료
+        winner = 'A';
+    }
+    else if(teamB_buffer->tail == teamB_buffer->head)
+    {   
+        printf("i ==200, B\n");
+        i=200; // 게임 종료
+        winner = 'B';
+    }
 
     switch(winner)
     {
@@ -117,7 +117,7 @@ int main()
 
 void circular_init()
 {
-    for(int i =0; i < 100; i++)
+    for(int i =0; i < 50; i++)
     {
         // buffer에 데이터 저장
         teamA_buffer->item[teamA_buffer->head] = i+1;
@@ -130,9 +130,9 @@ void circular_init()
 
     }
 
-    for(int i =0; i < 100; i++)
+    for(int i =0; i < 50; i++)
     {
-        teamB_buffer->item[teamB_buffer->head] = i+101;
+        teamB_buffer->item[teamB_buffer->head] = i+51;
 
         // head tail 조정
         teamB_buffer->head = ( teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; // head 증가
@@ -151,7 +151,7 @@ int temp; // 데이터를 옮기기 위한 임시 저장소
     pthread_mutex_lock(&mutex);
     while(teamB_buffer->head == teamB_buffer->tail)
     {
-        printf("A: B팀의 버퍼에 데이터가 없습니다.");
+        printf("A: B팀의 버퍼에 데이터가 없습니다.\n");
         pthread_cond_wait (&B_cons, &mutex);
     }
     printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
@@ -187,7 +187,7 @@ void* teamB_get_item(void* name)
 
     while(teamA_buffer->head == teamA_buffer->tail)
     {
-        printf("B: A팀의 버퍼에 데이터가 없습니다.");
+        printf("B: A팀의 버퍼에 데이터가 없습니다.\n");
         pthread_cond_wait (&A_cons, &mutex);
     }
     // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
