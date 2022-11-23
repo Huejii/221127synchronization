@@ -156,7 +156,7 @@ void* teamA_get_item(void* name)
             printf("승자는 %c입니다.\n", winner);
             return 0; // 테이터 없음
         }
-
+        printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
         temp = teamA_buffer->item[teamA_buffer->head] = teamB_buffer->item[teamB_buffer->tail];
         teamA_buffer->head = (teamA_buffer->head +1) % MAX_CIRCULAR_SIZE; //A팀 head 증가
         sleep(1);
@@ -164,7 +164,7 @@ void* teamA_get_item(void* name)
         teamB_buffer->tail = ( teamB_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //V팀 tail 증가
 
         // 진행 확인을 위한 출력
-        printf("%s thread id: %lx\t // get B->A item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
+        printf("result: %s thread id: %lx\t // get B->A item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
         count++;
     }
 }
@@ -184,6 +184,7 @@ void* teamB_get_item(void* name)
         }
 
         // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
+        printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
         temp = teamB_buffer->item[teamB_buffer->head] = teamA_buffer->item[teamA_buffer->tail];
         teamB_buffer->head = (teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; //B팀 head 증가
         sleep(1);
@@ -191,7 +192,7 @@ void* teamB_get_item(void* name)
         teamA_buffer->tail = ( teamA_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //A팀 tail 증가
 
         // 진행 확인을 위한 출력
-        printf("%s thread id: %lx\t // get A->B item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
+        printf("result: %s thread id: %lx\t // get A->B item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n\n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
         count++;
     }
 }
