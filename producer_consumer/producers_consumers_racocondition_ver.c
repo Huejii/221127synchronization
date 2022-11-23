@@ -23,8 +23,8 @@ typedef struct{
 } circular_t;        // circular buffer
 
 // 팀당 circular buffer가 한개씩 부여
-circular_t teamA = {0, 0, {1,2,3,4,5,6,7,8,9,10}};
-circular_t teamB = {0, 0, {11,12,13,14,15,16,17,18,19,20}};
+circular_t teamA = {.head=0, .tail=0};
+circular_t teamB = {.head=0, .tail=0};
 circular_t* teamA_buffer = &teamA;
 circular_t* teamB_buffer = &teamB;
 
@@ -51,7 +51,7 @@ int main()
     char winner;
     int i;
     
-    //circular_init();
+    circular_init();
     printf("// 버퍼게임 시작\n");
 
 
@@ -119,10 +119,10 @@ int main()
 
 void circular_init()
 {
-    teamA_buffer->head= 0;
-    teamA_buffer->tail = 0; // 태그 값을 0으로 초기화
-    teamB_buffer->head=0;
-    teamB_buffer->tail = 0; // 태그 값을 0으로 초기화
+    // teamA_buffer->head= 0;
+    // teamA_buffer->tail = 0; // 태그 값을 0으로 초기화
+    // teamB_buffer->head=0;
+    // teamB_buffer->tail = 0; // 태그 값을 0으로 초기화
     
     for(int i =0; i < 10; i++)
     {
