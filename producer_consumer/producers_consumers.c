@@ -154,10 +154,10 @@ int temp; // 데이터를 옮기기 위한 임시 저장소
         printf("A: B팀의 버퍼에 데이터가 없습니다.\n");
         pthread_cond_wait (&B_cons, &mutex);
     }
-    printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
     
     //consumer
     temp = teamB_buffer->item[teamB_buffer->tail];
+    printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
     teamB_buffer->item[teamB_buffer->tail] = 0;
     teamB_buffer->tail = ( teamB_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //B팀 tail 증가
     pthread_cond_signal (&B_prod);
@@ -190,11 +190,11 @@ void* teamB_get_item(void* name)
         pthread_cond_wait (&A_cons, &mutex);
     }
     // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
-    printf("%s thread id: %lx\t get A->B item %d\n",(char*)name, pthread_self(), temp);
     temp = teamA_buffer->item[teamA_buffer->tail];
+    printf("%s thread id: %lx\t get A->B item %d\n",(char*)name, pthread_self(), temp);
     teamA_buffer->item[teamA_buffer->tail] = 0;
     teamA_buffer->tail = ( teamA_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //B팀 tail 증가
-    
+
     while(teamB_buffer->head - teamB_buffer->tail == 1)
     {
         pthread_cond_wait (&B_prod, &mutex);
