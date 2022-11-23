@@ -3,7 +3,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <unistd.h>
-#define MAX_CIRCULAR_SIZE 200             // 링버퍼가 갖는 아이템 개수
+#define MAX_CIRCULAR_SIZE 100             // 링버퍼가 갖는 아이템 개수
 #define TEAM_THREAD_SIZE 5
 
 /*
@@ -62,7 +62,7 @@ int main()
     srand(time(NULL));
 
     /*thread create*/
-    for(i = 0; i <100; i++)
+    for(i = 0; i <200; i++)
     {
         random = rand(); // 난수 생성
         random %= 2; // 난수 생성
@@ -79,7 +79,7 @@ int main()
                 }
         }
         i++;
-
+    }
         if(teamA_buffer->tail == teamA_buffer->head && teamB_buffer->tail == teamB_buffer->head)
         {
             printf("i ==200, C\n");
@@ -98,7 +98,6 @@ int main()
             i=200; // 게임 종료
             winner = 'B';
         }
-    }
 
     switch(winner)
     {
@@ -150,14 +149,9 @@ int temp; // 데이터를 옮기기 위한 임시 저장소
     // 데이터 가져오기
     // 큐에 데이터가 없다면 복귀
     pthread_mutex_lock(&mutex);
-    if ( teamB_buffer->head == teamB_buffer->tail){
-        printf("A: B팀의 버퍼에 데이터가 없습니다.");
-        winner = 'A';
-        printf("승자는 %c입니다.\n", winner);
-        return 0; // 테이터 없음
-    }
     while(teamB_buffer->head == teamB_buffer->tail)
     {
+        printf("A: B팀의 버퍼에 데이터가 없습니다.");
         pthread_cond_wait (&B_cons, &mutex);
     }
     printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
@@ -190,15 +184,10 @@ void* teamB_get_item(void* name)
     // 데이터 가져오기
     // 큐에 데이터가 없다면 복귀
     pthread_mutex_lock(&mutex);
-    if ( teamA_buffer->head == teamA_buffer->tail){
-        printf("B: A팀의 버퍼에 데이터가 없습니다.");
-        winner = 'B';
-        printf("승자는 %c입니다.\n", winner);
-        return 0; // 테이터 없음
-    }
 
     while(teamA_buffer->head == teamA_buffer->tail)
     {
+        printf("B: A팀의 버퍼에 데이터가 없습니다.");
         pthread_cond_wait (&A_cons, &mutex);
     }
     // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
