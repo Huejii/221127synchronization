@@ -80,7 +80,7 @@ int main()
         }
         i++;
     }
-    if(teamA_buffer->head - teamA_buffer->tail === teamB_buffer->head - teamB_buffer->tail)
+    if(teamA_buffer->head - teamA_buffer->tail == teamB_buffer->head - teamB_buffer->tail)
     {
         printf("i ==200, C\n");
         printf("동점입니다.\n");
@@ -95,7 +95,7 @@ int main()
     {   
         printf("i ==200, B\n");
         i=200; // 게임 종료
-        printf("승자는 B팀입니다.\n";
+        printf("승자는 B팀입니다.\n");
     }
 
     // thread 종료
