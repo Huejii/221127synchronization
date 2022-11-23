@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
-#define MAX_CIRCULAR_SIZE 20             // 링버퍼가 갖는 아이템 개수
+#define MAX_CIRCULAR_SIZE 200             // 링버퍼가 갖는 아이템 개수
 #define TEAM_THREAD_SIZE 5
 
 /*
@@ -55,7 +55,7 @@ int main()
 
 
     /*thread create*/
-    for(i = 0; i <100; i++)
+    for(i = 0; i <1000; i++)
     {
         //srand(time(NULL));
         random = rand()%2; // 난수 생성
@@ -76,20 +76,20 @@ int main()
 
         if(teamA_buffer->tail == teamA_buffer->head && teamB_buffer->tail == teamB_buffer->head)
         {
-            printf("i ==200, C\n");
-            i=200; // 게임 종료
+            printf("i ==2000, C\n");
+            i=2000; // 게임 종료
             winner = 'C';
         }
         else if(teamA_buffer->tail == teamA_buffer->head)
         {
-            printf("i ==200, A\n");
-            i=200; // 게임 종료
+            printf("i ==2000, A\n");
+            i=2000; // 게임 종료
             winner = 'A';
         }
         else if(teamB_buffer->tail == teamB_buffer->head)
         {   
-            printf("i ==200, B\n");
-            i=200; // 게임 종료
+            printf("i ==2000, B\n");
+            i=2000; // 게임 종료
             winner = 'B';
         }
     }
@@ -117,7 +117,7 @@ void circular_init()
     // teamB_buffer->head=0;
     // teamB_buffer->tail = 0; // 태그 값을 0으로 초기화
     
-    for(int i =0; i < 10; i++)
+    for(int i =0; i < 100; i++)
     {
         // buffer에 데이터 저장
         teamA_buffer->item[teamA_buffer->head] = i+1;
@@ -130,9 +130,9 @@ void circular_init()
 
     }
 
-    for(int i =0; i < 10; i++)
+    for(int i =0; i < 100; i++)
     {
-        teamB_buffer->item[teamB_buffer->head] = i+11;
+        teamB_buffer->item[teamB_buffer->head] = i+101;
 
         // head tail 조정
         teamB_buffer->head = ( teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; // head 증가
