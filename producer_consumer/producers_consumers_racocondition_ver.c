@@ -55,14 +55,14 @@ int main()
 
 
     /*thread create*/
-    for(i = 0; i <100; i++)
+    for(i = 0; i <200; i++)
     {
         srand(time(NULL));
         random = rand()%2; // 난수 생성
         switch (random){
+            case 0:
+                {pthread_create(&A_thread[i%TEAM_THREAD_SIZE],NULL,teamA_get_item,(void*)A_name[i%TEAM_THREAD_SIZE]); break}
             case 1:
-                {pthread_create(&A_thread[i%TEAM_THREAD_SIZE],NULL,teamA_get_item,(void*)A_name[i%TEAM_THREAD_SIZE]);}
-            case 2:
                 {pthread_create(&B_thread[i%TEAM_THREAD_SIZE], NULL,teamB_get_item,(void*)B_name[i%TEAM_THREAD_SIZE]); break;}
         }
         i++;
