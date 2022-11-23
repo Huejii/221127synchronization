@@ -57,7 +57,7 @@ int main()
     /*thread create*/
     for(i = 0; i <1000; i++)
     {
-        srand(GetTickCound());
+        srand(GetTickCount());
         random = rand()%2; // 난수 생성
         printf("%d\n",random);
         switch (random){
