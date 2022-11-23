@@ -80,30 +80,22 @@ int main()
         }
         i++;
     }
-    if(teamA_buffer->tail == teamA_buffer->head && teamB_buffer->tail == teamB_buffer->head)
+    if(teamA_buffer->head - teamA_buffer->tail === teamB_buffer->head - teamB_buffer->tail)
     {
         printf("i ==200, C\n");
-        i=200; // 게임 종료
-        winner = 'C';
+        printf("동점입니다.\n");
     }
-    else if(teamA_buffer->tail == teamA_buffer->head)
+    else if(teamA_buffer->head - teamA_buffer->tail > teamB_buffer->head - teamB_buffer->tail)
     {
-        printf("i ==2000, A\n");
+        printf("i ==200, A\n");
         i=200; // 게임 종료
-        winner = 'A';
+        printf("승자는 A팀입니다.\n");
     }
-    else if(teamB_buffer->tail == teamB_buffer->head)
+    else
     {   
         printf("i ==200, B\n");
         i=200; // 게임 종료
-        winner = 'B';
-    }
-
-    switch(winner)
-    {
-        case 'c': {printf("동점입니다.\n"); break;}
-        defualt: printf("승자는 %c입니다.\n", winner);
-
+        printf("승자는 B팀입니다.\n";
     }
 
     // thread 종료
@@ -154,7 +146,7 @@ int temp; // 데이터를 옮기기 위한 임시 저장소
         printf("A: B팀의 버퍼에 데이터가 없습니다.\n");
         pthread_cond_wait (&B_cons, &mutex);
     }
-    
+
     //consumer
     temp = teamB_buffer->item[teamB_buffer->tail];
     printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
