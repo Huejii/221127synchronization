@@ -23,8 +23,8 @@ typedef struct{
 } circular_t;        // circular buffer
 
 // 팀당 circular buffer가 한개씩 부여
-circular_t* teamA_buffer;
-circular_t* teamB_buffer;
+circular_t* teamA_buffer = {0, 0, {1,2,3,4,5,6,7,8,9,10}};
+circular_t* teamB_buffer = {0, 0, {11,12,13,14,15,16,17,18,19,20}};;
 
 /*스레드 ID 선언*/
 pthread_t A_thread[5], B_thread[5];
@@ -49,7 +49,7 @@ int main()
     char winner;
     int i;
     
-    circular_init();
+    //circular_init();
     printf("// 버퍼게임 시작\n");
 
 
