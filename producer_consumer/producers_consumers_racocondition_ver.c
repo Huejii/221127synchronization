@@ -117,8 +117,10 @@ int main()
 
 void circular_init()
 {
-    teamA_buffer->head = teamA_buffer->tail = 0; // 태그 값을 0으로 초기화
-    teamB_buffer->head = teamB_buffer->tail = 0; // 태그 값을 0으로 초기화
+    teamA_buffer->head= 0;
+    teamA_buffer->tail = 0; // 태그 값을 0으로 초기화
+    teamB_buffer->head=0;
+    teamB_buffer->tail = 0; // 태그 값을 0으로 초기화
     
     for(int i =0; i < 10; i++)
     {
