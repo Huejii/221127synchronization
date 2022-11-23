@@ -158,6 +158,7 @@ void* teamA_get_item(void* name)
 
         temp = teamA_buffer->item[teamA_buffer->head] = teamB_buffer->item[teamB_buffer->tail];
         teamA_buffer->head = (teamA_buffer->head +1) % MAX_CIRCULAR_SIZE; //A팀 head 증가
+        sleep(1);
         teamB_buffer->item[teamB_buffer->tail] = 0;
         teamB_buffer->tail = ( teamB_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //V팀 tail 증가
 
@@ -182,6 +183,7 @@ void* teamB_get_item(void* name)
         // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
         temp = teamB_buffer->item[teamB_buffer->head] = teamA_buffer->item[teamA_buffer->tail];
         teamB_buffer->head = (teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; //B팀 head 증가
+        sleep(1);
         teamA_buffer->item[teamA_buffer->tail] = 0;
         teamA_buffer->tail = ( teamA_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //A팀 tail 증가
 
