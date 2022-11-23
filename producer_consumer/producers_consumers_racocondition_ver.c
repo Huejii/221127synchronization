@@ -86,18 +86,6 @@ int main()
             winner = 'B';
         }
     }
-    if(i != 200)
-    {
-        if(teamA_buffer->tail < teamB_buffer->tail)
-        {
-            winner = 'A';
-        }
-        else if(teamA_buffer->tail > teamB_buffer->tail)
-        {
-            winner = 'B';
-        }else
-            winner = 'C';
-    }
 
     switch(winner)
     {
