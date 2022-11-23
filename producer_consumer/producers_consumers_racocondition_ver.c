@@ -90,17 +90,17 @@ int main()
         }
         i++;
 
-        if(teamA_buffer->item[teamA_buffer->tail] == NULL && teamB_buffer->item[teamB_buffer->tail] == NULL)
+        if(teamA_buffer->item[teamA_buffer->tail] == 0 && teamB_buffer->item[teamB_buffer->tail] == 0)
         {
             i=200; // 게임 종료
             winner = 'C';
         }
-        else if(teamA_buffer->item[teamA_buffer->tail] == NULL)
+        else if(teamA_buffer->item[teamA_buffer->tail] == 0)
         {
             i=200; // 게임 종료
             winner = 'A';
         }
-        else if(teamB_buffer->item[teamB_buffer->tail] = NULL)
+        else if(teamB_buffer->item[teamB_buffer->tail] == 0)
         {
             i=200; // 게임 종료
             winner = 'B';
