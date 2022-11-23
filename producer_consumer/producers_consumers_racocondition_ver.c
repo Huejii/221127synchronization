@@ -146,7 +146,7 @@ void* teamA_get_item(void* name)
 {
     int temp; // 데이터를 옮기기 위한 임시 저장소
 
-    for(int i =0; i < 100; i++)
+    for(int i =0; i < 10; i++)
     {
         // 데이터 가져오기
         // 큐에 데이터가 없다면 복귀
@@ -172,7 +172,7 @@ void* teamA_get_item(void* name)
 void* teamB_get_item(void* name)
 {
     int temp; // 데이터를 옮기기 위한 임시 저장소
-    for(int i =0; i < 100; i++)
+    for(int i =0; i < 10; i++)
     {
         // 데이터 가져오기
         // 큐에 데이터가 없다면 복귀
