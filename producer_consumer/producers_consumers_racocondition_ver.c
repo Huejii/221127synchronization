@@ -154,7 +154,7 @@ void* teamA_get_item(void* name)
             printf("A: B팀의 버퍼에 데이터가 없습니다.");
             winner = 'A';
             printf("승자는 %c입니다.\n", winner);
-            return; // 테이터 없음
+            return 0; // 테이터 없음
         }
 
         temp = teamA_buffer->item[teamA_buffer->head] = teamB_buffer->item[teamB_buffer->tail];
@@ -180,7 +180,7 @@ void* teamB_get_item(void* name)
             printf("B: A팀의 버퍼에 데이터가 없습니다.");
             winner = 'B';
             printf("승자는 %c입니다.\n", winner);
-            return; // 테이터 없음
+            return 0; // 테이터 없음
         }
 
         // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
