@@ -15,7 +15,7 @@
 
     즉, 이 게임에서 각 thread는 상대 팀에 있는 데이터를 지울 때 consumer 역할을 하고,
     데이터를 가져와서 자신의 팀에 입력할 때 producer 역할을 한다.
-*/
+*/ 
 
 typedef struct{
   int head;                         // 쓰기 위치
@@ -80,7 +80,15 @@ int main()
         }
         i++;
     }
-    if(teamA_buffer->head - teamA_buffer->tail == teamB_buffer->head - teamB_buffer->tail)
+
+    // thread 종료
+    for(int i = 0; i<5; i++)
+    {
+        pthread_join(A_thread[i],NULL);
+        pthread_join(B_thread[i],NULL);
+    }
+
+        if(teamA_buffer->head - teamA_buffer->tail == teamB_buffer->head - teamB_buffer->tail)
     {
         printf("동점입니다.\n");
     }
@@ -91,13 +99,6 @@ int main()
     else
     { 
         printf("B팀의 승리입니다.\n");
-    }
-
-    // thread 종료
-    for(int i = 0; i<5; i++)
-    {
-        pthread_join(A_thread[i],NULL);
-        pthread_join(B_thread[i],NULL);
     }
     return 0;
 }
@@ -180,7 +181,7 @@ void* teamB_get_item(void* name)
     temp = teamA_buffer->item[teamA_buffer->tail];
     printf("%s thread id: %lx\t get A->B item %d\n",(char*)name, pthread_self(), temp);
     teamA_buffer->item[teamA_buffer->tail] = 0;
-    teamA_buffer->tail = ( teamA_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //B팀 tail 증가
+    teamA_buffer->tail = ( teamA_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //A팀 tail 증가
 
     while(teamB_buffer->head - teamB_buffer->tail == 1)
     {
