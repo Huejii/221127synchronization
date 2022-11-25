@@ -88,7 +88,7 @@ int main()
         pthread_join(B_thread[i],NULL);
     }
 
-        if(teamA_buffer->head - teamA_buffer->tail == teamB_buffer->head - teamB_buffer->tail)
+    if(teamA_buffer->head - teamA_buffer->tail == teamB_buffer->head - teamB_buffer->tail)
     {
         printf("동점입니다.\n");
     }

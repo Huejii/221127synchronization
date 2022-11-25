@@ -1,130 +1,182 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
+#include <unistd.h>
+#define MAX_CIRCULAR_SIZE 90             // 링버퍼가 갖는 아이템 개수
+#define TEAM_THREAD_SIZE 5
 
-#define MAX_RING_SIZE 200               // 링버퍼가 갖는 아이템 개수
-#define MAX_RING_DATA_SIZE 2048         // 링버퍼 내의 버퍼 개별 크기
+/*
+    - 버퍼 게임
+    2개의 팀이 있다. 각 팀에는 circular buffer가 한개씩 부여된다.
+    각 팀의 thread는 상대 팀의 버퍼에서 자신의 버퍼로 숫자 1~20이 적힌 아이템을 가져온다.
+    게임이 종료되는 순간 버퍼에 더 많은 아이템이 있는 팀이 승리한다.
+    첫 시작은 팀당 숫자 10개씩  각각 1~10, 11~20이 적힌 아이템을 부여한다.
 
-typedef struct{      
-  int sz_data;                            // 개별 버퍼에 복사된 실제 데이터 길이
-  char data[MAX_RING_DATA_SIZE];        // 개별se 버퍼의 실제 저장 장소
-} rign_item_t;    // 링버퍼 내 개별 저장소
+    즉, 이 게임에서 각 thread는 상대 팀에 있는 데이터를 지울 때 consumer 역할을 하고,
+    데이터를 가져와서 자신의 팀에 입력할 때 producer 역할을 한다.
+*/ 
 
 typedef struct{
-  int tag_head;                         // 쓰기 위치
-  int tag_tail;                         // 읽기 위치
-  rign_item_t item[MAX_RING_SIZE];        // 링버퍼 내의 저장 장소
-} ring_t;        // 링버퍼
+  int head;                         // 쓰기 위치
+  int tail;                         // 읽기 위치
+  int item[MAX_CIRCULAR_SIZE];        // CIRCULAR 내의 저장 장소
+} circular_t;        // circular buffer
 
-/** ----------------------------------------------------------------------------
-@brief  링버퍼에 데이터 저장
-@remark 저장할 데이터는 최대 MAX_RING_DATA_SIZE로 저장 
-@param  ring : 링버퍼 포인터
-@param  data : 저장할 데이터
-@param  sz_data : 데이터 길이
-@return -
- -----------------------------------------------------------------------------*/
-void ring_put( ring_t *ring, char *data, int sz_data){
+// 팀당 circular buffer가 한개씩 부여
+circular_t teamA = {.head=0, .tail=0};
+circular_t teamB = {.head=0, .tail=0};
+circular_t* teamA_buffer = &teamA;
+circular_t* teamB_buffer = &teamB;
 
-  // 링버퍼의 개별 저장소보다 데이터가 크다면
-  if ( MAX_RING_DATA_SIZE < sz_data)    sz_data = MAX_RING_DATA_SIZE; 
+/*스레드 ID 선언*/
+pthread_t A_thread[5], B_thread[5];
 
-  // ring에 데이터 저장
-  ring->item[ring->tag_head].sz_data = sz_data;
-  memcpy( ring->item[ring->tag_head].data, data, sizeof( ring->item[ring->tag_head].data));
+// 스레드의 이름 배열 선언 및 초기화
+char* A_name[TEAM_THREAD_SIZE] = {"A_player01", "A_player02", "A_player03", "A_player04", "A_player05"}; //reader
+char* B_name[TEAM_THREAD_SIZE] = {"B_player01", "B_player02", "B_player03", "B_player04", "B_player05"}; //writer
 
-  // ring tag 조정
-  ring->tag_head = ( ring->tag_head +1) % MAX_RING_SIZE; // head 증가
-  if ( ring->tag_head == ring->tag_tail){ // 버퍼가 모두 찼다면
-    ring->tag_tail = ( ring->tag_tail +1) % MAX_RING_SIZE; // tail 증가
-  }
-}
+/*데이터에 접근한 순서를 파악하기 위한 count variable 선언*/
+int count = 1;
+char winner;
 
-/** ----------------------------------------------------------------------------
-@brief  링버퍼 내의 데이터 요청
-@remark 수신 버퍼는 0으로 초기화 
-@remark 수신 버퍼에는 최대 sz_buff만큼 저장 
-@param  ring : 링버퍼 포인터
-@param  buff : 데이터 수신 버퍼
-@param  sz_buff : 버퍼 크기
-@return 데이터 길이
- -----------------------------------------------------------------------------*/
-int ring_get( ring_t *ring, char *buff, int sz_buff){
+void circular_init();
+void* teamA_get_item();
+void* teamB_get_item();
 
-  // 큐에 데이터가 없다면 복귀
-  if ( ring->tag_head == ring->tag_tail){
-    return 0; // 테이터 없음
-  }
+/*semaphore variable 선언*/
+pthread_mutex_t mutex =PTHREAD_MUTEX_INITIALIZER;	/* mutex lock for buffer */
+pthread_cond_t A_cons = PTHREAD_COND_INITIALIZER; /* consumer waits on this cond var */
+pthread_cond_t A_prod = PTHREAD_COND_INITIALIZER; /* producer waits on this cond var */
+pthread_cond_t B_cons = PTHREAD_COND_INITIALIZER; /* consumer waits on this cond var */
+pthread_cond_t B_prod = PTHREAD_COND_INITIALIZER; /* producer waits on this cond var */
 
-  // 큐 데이터 구하기
-  memset( buff, 0, sz_buff);
-  int sz_data = ring->item[ring->tag_tail].sz_data;
-  if ( sz_buff < sz_data)   sz_data= sz_buff;             // 수신 버퍼 크기만큼 복사
-  memcpy( buff, ring->item[ring->tag_tail].data, sz_data);
+int main()
+{
 
-  ring->tag_tail = ( ring->tag_tail +1) % MAX_RING_SIZE;  // tail 증가
+    int random = 0; // 정수형 변수 선언
+    int i;
+    
+    circular_init();
+    printf("// 버퍼게임 시작\n");
+    srand(time(NULL));
 
-  return sz_data;
-}
-
-/** ----------------------------------------------------------------------------
-@brief  링버퍼에 데이터가 있는지의 여부
-@remark -
-@param  ring : 링버퍼 포인터
-@return TRUE == 데이터 있음
- -----------------------------------------------------------------------------*/
-int ring_exists( ring_t *ring){
-
-  return ring->tag_head != ring->tag_tail; // head 와 tail 값이 다르다면 데이터 있음
-}
-
-/** ----------------------------------------------------------------------------
-@brief 링버퍼 초기화
-@remark -
-@param ring : 링버퍼 포인터
- -----------------------------------------------------------------------------*/
-void ring_init( ring_t *ring){
-
-  ring->tag_head = ring->tag_tail = 0; // 태그 값을 0으로 초기화
-}
-
-
-int main( void){
-  char    *data1 = "badayak.com";
-  char    *data2 = "blogger";
-  char    *data3 = "tistory.com";
-  ring_t   ring;
-
-  ring_init( &ring);
-  ring_put( &ring, data1, strlen( data1));
-  ring_put( &ring, data2, strlen( data2));
-
-  printf( "첫 번째 출력------------------------\n");
-  while( 1){
-    if ( ring_exists( &ring)){
-      char buff[MAX_RING_DATA_SIZE];
-      int  sz_data = ring_get( &ring, buff, sizeof( buff));
-      printf( "data size=%2d data string=%s\n", sz_data, buff);
-    } 
-    else {
-      break;
-    }      
-  }
-  ring_put( &ring, data1, strlen( data1));
-  ring_put( &ring, data2, strlen( data2));
-  ring_put( &ring, data1, strlen( data1));
-  ring_put( &ring, data2, strlen( data2));
-  ring_put( &ring, data3, strlen( data3));
-
-  printf( "두 번째 출력------------------------\n");
-  while( 1){
-    if ( ring_exists( &ring)){
-      char buff[MAX_RING_DATA_SIZE];
-      int  sz_data = ring_get( &ring, buff, sizeof( buff));      
-      printf( "data size=%2d data string=%s\n", sz_data, buff);
-    } 
-    else {
-      break;
+    /*thread create*/
+    for(i = 0; i <200; i++)
+    {
+        random = rand(); // 난수 생성
+        random %= 2; // 난수 생성
+        switch (random){
+            case 0:
+                {
+                    pthread_create(&A_thread[i%TEAM_THREAD_SIZE],NULL,teamA_get_item,(void*)A_name[i%TEAM_THREAD_SIZE]);
+                    break;
+                }
+            case 1:
+                {
+                    pthread_create(&B_thread[i%TEAM_THREAD_SIZE], NULL,teamB_get_item,(void*)B_name[i%TEAM_THREAD_SIZE]);
+                    break;
+                }
+        }
+        i++;
     }
-  }
+
+    // thread 종료
+    for(int i = 0; i<5; i++)
+    {
+        pthread_join(A_thread[i],NULL);
+        pthread_join(B_thread[i],NULL);
+    }
+
+    if(teamA_buffer->head - teamA_buffer->tail == teamB_buffer->head - teamB_buffer->tail)
+    {
+        printf("동점입니다.\n");
+    }
+    else if(teamA_buffer->head - teamA_buffer->tail > teamB_buffer->head - teamB_buffer->tail)
+    {
+        printf("A팀의 승리입니다.\n");
+    }
+    else
+    { 
+        printf("B팀의 승리입니다.\n");
+    }
+    return 0;
+}
+
+void circular_init()
+{
+    for(int i =0; i < 50; i++)
+    {
+        // buffer에 데이터 저장
+        teamA_buffer->item[teamA_buffer->head] = i+1;
+
+        // head tail 조정
+        teamA_buffer->head = ( teamA_buffer->head +1) % MAX_CIRCULAR_SIZE; // head 증가
+        if ( teamA_buffer->head == teamA_buffer->tail ){ // 버퍼가 모두 찼다면
+            printf("버퍼가 가득 찼습니다.");
+        }
+
+    }
+
+    for(int i =0; i < 50; i++)
+    {
+        teamB_buffer->item[teamB_buffer->head] = i+51;
+
+        // head tail 조정
+        teamB_buffer->head = ( teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; // head 증가
+        if ( teamB_buffer->head == teamB_buffer->tail ){ // 버퍼가 모두 찼다면
+            printf("버퍼가 가득 찼습니다.");
+        }
+    }
+
+}
+
+void* teamA_get_item(void* name)
+{
+int temp; // 데이터를 옮기기 위한 임시 저장소
+    // 데이터 가져오기
+    // 큐에 데이터가 없다면 복귀
+    while(teamB_buffer->head == teamB_buffer->tail)
+    {
+        printf("A: B팀의 버퍼에 데이터가 없습니다.\n");
+    }
+
+    //consumer
+    temp = teamB_buffer->item[teamB_buffer->tail];
+    printf("%s thread id: %lx\t get B->A item %d\n",(char*)name, pthread_self(), temp);
+    teamB_buffer->item[teamB_buffer->tail] = 0;
+    teamB_buffer->tail = ( teamB_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //B팀 tail 증가
+
+    //producer
+    teamA_buffer->item[teamA_buffer->head] = temp;
+    teamA_buffer->head = (teamA_buffer->head +1) % MAX_CIRCULAR_SIZE; //A팀 head 증가
+    // 진행 확인을 위한 출력
+    printf("result: %s thread id: %lx\t // get B->A item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
+
+    count++;
+}
+
+void* teamB_get_item(void* name)
+{
+    int temp; // 데이터를 옮기기 위한 임시 저장소
+    // 데이터 가져오기
+    // 큐에 데이터가 없다면 복귀
+
+    while(teamA_buffer->head == teamA_buffer->tail)
+    {
+        printf("B: A팀의 버퍼에 데이터가 없습니다.\n");
+    }
+    // A팀의 버퍼에서 B팀의 버퍼로 아이템 가져오기
+    temp = teamA_buffer->item[teamA_buffer->tail];
+    printf("%s thread id: %lx\t get A->B item %d\n",(char*)name, pthread_self(), temp);
+    teamA_buffer->item[teamA_buffer->tail] = 0;
+    teamA_buffer->tail = ( teamA_buffer->tail +1) % MAX_CIRCULAR_SIZE;  //A팀 tail 증가
+
+    //producer
+    teamB_buffer->item[teamB_buffer->head] = temp;
+    teamB_buffer->head = (teamB_buffer->head +1) % MAX_CIRCULAR_SIZE; //A팀 head 증가
+
+    // 진행 확인을 위한 출력
+    printf("result: %s thread id: %lx\t // get A->B item %d, A_head: %d, A_tail: %d, B_head: %d, B_tail: %d \n\n",(char*)name, pthread_self(), temp, teamA_buffer->head, teamA_buffer->tail, teamB_buffer->head, teamB_buffer->tail);
+    count++;
 }
