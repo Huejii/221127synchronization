@@ -68,6 +68,10 @@ void *reader_task(void* name)
     char curr_time_str[128];
     int i = 0;
     int more_read = 100;
+    char* T = "November 24th";
+    char* M = "December 25th";
+    char* G = "December 31th";
+    char* H = "January 1st";
 
     do {
         pthread_mutex_lock(&mutex);
