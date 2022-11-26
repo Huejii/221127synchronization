@@ -33,8 +33,8 @@ circular_t* teamB_buffer = &teamB;
 pthread_t A_thread[5], B_thread[5];
 
 // 스레드의 이름 배열 선언 및 초기화
-char* A_name[TEAM_THREAD_SIZE] = {"A_player01", "A_player02", "A_player03", "A_player04", "A_player05"}; //reader
-char* B_name[TEAM_THREAD_SIZE] = {"B_player01", "B_player02", "B_player03", "B_player04", "B_player05"}; //writer
+char* A_name[TEAM_THREAD_SIZE] = {"A_player01", "A_player02", "A_player03", "A_player04", "A_player05"};
+char* B_name[TEAM_THREAD_SIZE] = {"B_player01", "B_player02", "B_player03", "B_player04", "B_player05"};
 
 /*데이터에 접근한 순서를 파악하기 위한 count variable 선언*/
 int count = 1;

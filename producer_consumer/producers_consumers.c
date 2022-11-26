@@ -3,7 +3,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <unistd.h>
-#define MAX_CIRCULAR_SIZE 90             // 링버퍼가 갖는 아이템 개수
+#define MAX_CIRCULAR_SIZE 90             //circular 버퍼가 갖는 아이템 개수
 #define TEAM_THREAD_SIZE 5
 
 /*
@@ -32,9 +32,9 @@ circular_t* teamB_buffer = &teamB;
 /*스레드 ID 선언*/
 pthread_t A_thread[5], B_thread[5];
 
-// 스레드의 이름 배열 선언 및 초기화
-char* A_name[TEAM_THREAD_SIZE] = {"A_player01", "A_player02", "A_player03", "A_player04", "A_player05"}; //reader
-char* B_name[TEAM_THREAD_SIZE] = {"B_player01", "B_player02", "B_player03", "B_player04", "B_player05"}; //writer
+/*스레드의 이름 배열 선언 및 초기화*/
+char* A_name[TEAM_THREAD_SIZE] = {"A_player01", "A_player02", "A_player03", "A_player04", "A_player05"};
+char* B_name[TEAM_THREAD_SIZE] = {"B_player01", "B_player02", "B_player03", "B_player04", "B_player05"};
 
 /*데이터에 접근한 순서를 파악하기 위한 count variable 선언*/
 int count = 1;
@@ -45,11 +45,11 @@ void* teamA_get_item();
 void* teamB_get_item();
 
 /*semaphore variable 선언*/
-pthread_mutex_t mutex =PTHREAD_MUTEX_INITIALIZER;	/* mutex lock for buffer */
-pthread_cond_t A_cons = PTHREAD_COND_INITIALIZER; /* consumer waits on this cond var */
-pthread_cond_t A_prod = PTHREAD_COND_INITIALIZER; /* producer waits on this cond var */
-pthread_cond_t B_cons = PTHREAD_COND_INITIALIZER; /* consumer waits on this cond var */
-pthread_cond_t B_prod = PTHREAD_COND_INITIALIZER; /* producer waits on this cond var */
+pthread_mutex_t mutex =PTHREAD_MUTEX_INITIALIZER;	/* mutex lock */
+pthread_cond_t A_cons = PTHREAD_COND_INITIALIZER; /* A_consumer waits */
+pthread_cond_t A_prod = PTHREAD_COND_INITIALIZER; /* A_producer waits*/
+pthread_cond_t B_cons = PTHREAD_COND_INITIALIZER; /* B_consumer waits */
+pthread_cond_t B_prod = PTHREAD_COND_INITIALIZER; /* B_producer waits */
 
 int main()
 {
